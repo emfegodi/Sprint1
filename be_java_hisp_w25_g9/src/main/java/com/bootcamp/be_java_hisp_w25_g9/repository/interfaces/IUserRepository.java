@@ -7,4 +7,5 @@ public interface IUserRepository {
     public String addUser(User user);
 
     public List<User> findAll();
+
 }
