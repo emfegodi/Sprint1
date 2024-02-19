@@ -41,6 +41,8 @@ public class UserService implements IUserService {
             throw new BadRequestException("El cliente no existe");
         if(!userRepository.userExists(userIdToFollow))
             throw new BadRequestException("El vendedor no existe");
+        if(userRepository.getUserById(userIdToFollow).getClass() == Client.class)
+            throw new BadRequestException("Solo puede seguir vendedores");
 
         Client client = (Client) userRepository.getUserById(userId);
         Seller seller = (Seller) userRepository.getUserById(userIdToFollow);

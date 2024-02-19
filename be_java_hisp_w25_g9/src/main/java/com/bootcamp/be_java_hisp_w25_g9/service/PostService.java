@@ -78,7 +78,7 @@ public class PostService implements IPostService {
     }
 
     public List<PostResponseDto> getPostsByuserId(int userId){
-        if(!userRepository.userExists(userId)) throw new NotFoundException(MessageFormat.format("El usuario con id {0} no existe",userId))
+        if(!userRepository.userExists(userId)) throw new NotFoundException(MessageFormat.format("El usuario con id {0} no existe",userId));
         List<Seller> followedList = userRepository.getUserById(userId).getFollowed();
         if(followedList.isEmpty()){
             throw new NotFoundException(MessageFormat.format("El usuario {0} no tiene vendedores seguidos", userId));
