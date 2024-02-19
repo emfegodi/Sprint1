@@ -11,5 +11,5 @@ public interface IUserRepository {
     boolean userExists(long userId);
     User getUserById(long userId);
     void save(User user);
-
+    User getUserById(Integer id);
 }
