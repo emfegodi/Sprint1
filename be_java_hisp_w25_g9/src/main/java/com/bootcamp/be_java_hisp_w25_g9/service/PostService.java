@@ -14,7 +14,8 @@ import com.bootcamp.be_java_hisp_w25_g9.model.Product;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
-import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRespository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRepository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,10 @@ import java.util.List;
 public class PostService implements IPostService {
     private final IPostRepository postRepository;
     private final IUserRepository userRepository;
-    private final IProductRespository productRepository;
+    private final IProductRepository productRepository;
     ObjectMapper mapper = new ObjectMapper();
 
-    public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRespository productRepository) {
+    public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRepository productRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
