@@ -1,10 +1,12 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
-import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Post;
@@ -12,12 +14,10 @@ import com.bootcamp.be_java_hisp_w25_g9.model.Product;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRespository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
-import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IUserService;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -31,15 +31,45 @@ import java.util.List;
 public class PostService implements IPostService {
     private final IPostRepository postRepository;
     private final IUserRepository userRepository;
+    private final IProductRespository productRespository;
+    ObjectMapper mapper = new ObjectMapper();
 
-    public PostService(IPostRepository postRepository, IUserRepository userRepository) {
+    public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRespository productRespository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.productRespository = productRespository;
+        mapper.addMixIn(Product.class, ProductDtoMixIn.class);
+        mapper.addMixIn(Post.class, PostResponseDtoMixin.class);
+        mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
     }
 
     @Override
     public MessageDto createPost(PostRequestDto postRequestDto) {
-        return null;
+        User seller = userRepository.getUserById(postRequestDto.user_id());
+        if (seller == null || seller.getClass().equals(Seller.class)){
+            throw new NotFoundException("El usuario no se encuentra o no es vendedor");
+        }
+        Product product = new Product(
+                postRequestDto.product().product_id(),
+                postRequestDto.product().product_name(),
+                postRequestDto.product().type(),
+                postRequestDto.product().brand(),
+                postRequestDto.product().color(),
+                postRequestDto.product().notes()
+        );
+        if (!productRespository.findAll().contains(product)){
+            productRespository.addProduct(product);
+        }
+        Post post = new Post(
+                postRepository.findAll().size(),
+                postRequestDto.user_id(),
+                postRequestDto.category(),
+                postRequestDto.date(),
+                product,
+                postRequestDto.price()
+        );
+        postRepository.addPost(post);
+        return new MessageDto("Publicación creada con éxito");
     }
 
     @Override
@@ -48,7 +78,7 @@ public class PostService implements IPostService {
     }
 
     public List<PostResponseDto> getPostsByuserId(int userId){
-        List<Seller> followedList = userRepository.findUser(userId).getFollowed();
+        List<Seller> followedList = userRepository.getUserById(userId).getFollowed();
         if(followedList.isEmpty()){
             throw new NotFoundException(MessageFormat.format("El usuario {0} no tiene vendedores seguidos", userId));
         }
@@ -67,7 +97,7 @@ public class PostService implements IPostService {
         if(lastestPosts.isEmpty()){
             throw new NotFoundException(MessageFormat.format("No se encontraron post de los vendedores seguidos del usuario {0}",userId));
         }
-        return lastestPosts.stream().map(this::convertPostToDto).toList();
+        return lastestPosts.stream().map(post -> mapper.convertValue(post, PostResponseDto.class)).toList();
     }
 
     public boolean compareDates(LocalDate date1, LocalDate date2){
@@ -91,27 +121,5 @@ public class PostService implements IPostService {
             }
             default -> throw new BadRequestException(MessageFormat.format("{0} no es valido, recuerde que debe ingresar 'date_asc' o 'date_desc'", order));
         }
-    }
-
-    public PostResponseDto convertPostToDto(Post post){
-        return new PostResponseDto(
-                post.getUserId(),
-                post.getId(),
-                post.getDate(),
-                productToDto(post.getProduct()),
-                post.getCategory(),
-                post.getPrice()
-        );
-    }
-
-    public ProductDto productToDto(Product product){
-        return new ProductDto(
-                product.getProductId(),
-                product.getProductName(),
-                product.getType(),
-                product.getBrand(),
-                product.getColor(),
-                product.getNotes()
-        );
     }
 }

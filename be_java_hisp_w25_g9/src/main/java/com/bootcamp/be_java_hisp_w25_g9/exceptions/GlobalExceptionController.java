@@ -5,17 +5,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 
-@ControllerAdvice
+@ControllerAdvice(annotations = RestController.class)
 public class GlobalExceptionController {
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<?> notFound(NotFoundException exception){
-        return new ResponseEntity<>(new MessageDto(exception.getMessage()), HttpStatus.NOT_FOUND);
+    @ExceptionHandler
+    public ResponseEntity<MessageDto> noUsersFoundExceptionHandler(NoUsersFoundException e){
+        return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<?> badRequest(BadRequestException exception){
-        return new ResponseEntity<>(new MessageDto(exception.getMessage()), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<MessageDto> badRequest(BadRequestException e){
+        MessageDto messageDto = new MessageDto(e.getMessage());
+        return new ResponseEntity<>(messageDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> notFound (NotFoundException e){
+        return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 }
