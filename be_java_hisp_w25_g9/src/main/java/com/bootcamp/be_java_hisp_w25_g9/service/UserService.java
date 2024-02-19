@@ -8,6 +8,7 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NoUsersFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.*;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
@@ -19,8 +20,6 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.UserDtoMixIn;
 
 import java.util.List;
 import java.util.Optional;
-
-import java.util.List;
 
 @Service
 public class UserService implements IUserService {
@@ -36,7 +35,7 @@ public class UserService implements IUserService {
     @Override
     public MessageDto follow(int userId, int userIdToFollow) {
         if(userId == userIdToFollow)
-            throw new BadRequestException("El usuario no puede seguirse asi mismo");
+            throw new BadRequestException("El usuario no puede seguirse a sí mismo");
 
         if(!userRepository.userExists(userId))
             throw new BadRequestException("El cliente no existe");
@@ -59,7 +58,25 @@ public class UserService implements IUserService {
 
     @Override
     public MessageDto unfollow(int userId, int userIdToUnfollow) {
-        return null;
+        if (userId == userIdToUnfollow)
+            throw new BadRequestException("El usuario no puede dejar de seguirse a sí mismo");
+        if(!userRepository.userExists(userId))
+            throw new BadRequestException("El cliente no existe");
+        if(!userRepository.userExists(userIdToUnfollow))
+            throw new BadRequestException("El vendedor no existe");
+
+        Client client = (Client) userRepository.getUserById(userId);
+        Seller seller = (Seller) userRepository.getUserById(userIdToUnfollow);
+
+        List<Seller> followedList = client.getFollowed();
+        Optional<Seller> sellerFollowed = followedList.stream().filter(u -> u.getUserId() == userIdToUnfollow).findFirst();
+
+        if(!sellerFollowed.isPresent())
+            throw new BadRequestException("El vendedor no estaba en la lista de seguidos del cliente");
+
+        followedList.remove(seller);
+
+        return new MessageDto("El vendedor ha sido quitado de la lista de seguidos del cliente");
     }
 
     @Override
