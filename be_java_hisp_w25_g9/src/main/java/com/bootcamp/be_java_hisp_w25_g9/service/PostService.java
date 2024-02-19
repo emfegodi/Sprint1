@@ -1,7 +1,6 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
-import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
