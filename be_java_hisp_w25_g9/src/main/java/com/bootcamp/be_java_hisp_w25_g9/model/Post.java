@@ -19,8 +19,4 @@ public class Post {
     LocalDate date;
     Product product;
     double price;
-
-
-
-
 }
