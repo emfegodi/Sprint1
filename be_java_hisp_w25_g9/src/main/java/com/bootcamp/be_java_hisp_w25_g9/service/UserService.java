@@ -9,6 +9,8 @@ import com.bootcamp.be_java_hisp_w25_g9.exceptions.NoUsersFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.*;
+import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,7 +81,17 @@ public class UserService implements IUserService {
 
     @Override
     public FolowersCountDto getFollowersCount(int userId) {
-        return null;
+
+        List<Seller> sellerList = userRepository.findAll().stream()
+                .flatMap(u -> u.getFollowed().stream()
+                        .filter(s -> s.getUserId() == userId)
+                )
+                .toList();
+
+        if (sellerList.isEmpty()) throw new NotFoundException("Vendedor no encontrado");
+        int count = sellerList.size();
+
+        return new FolowersCountDto(userId, sellerList.get(0).getUserName(), count);
     }
 
     @Override
