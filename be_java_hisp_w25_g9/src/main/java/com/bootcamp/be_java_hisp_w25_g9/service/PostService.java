@@ -1,5 +1,6 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
+import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
@@ -16,6 +17,7 @@ import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRespository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class PostService implements IPostService {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.productRespository = productRespository;
+        mapper.registerModule(new JavaTimeModule());
         mapper.addMixIn(Product.class, ProductDtoMixIn.class);
         mapper.addMixIn(Post.class, PostResponseDtoMixin.class);
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
@@ -39,28 +42,14 @@ public class PostService implements IPostService {
     @Override
     public MessageDto createPost(PostRequestDto postRequestDto) {
         User seller = userRepository.getUserById(postRequestDto.user_id());
-        if (seller == null || seller.getClass().equals(Seller.class)){
+        if (seller == null || !seller.getClass().equals(Seller.class)){
             throw new NotFoundException("El usuario no se encuentra o no es vendedor");
         }
-        Product product = new Product(
-                postRequestDto.product().product_id(),
-                postRequestDto.product().product_name(),
-                postRequestDto.product().type(),
-                postRequestDto.product().brand(),
-                postRequestDto.product().color(),
-                postRequestDto.product().notes()
-        );
-        if (!productRespository.findAll().contains(product)){
+        Product product = mapper.convertValue(postRequestDto.product(), Product.class);
+        if (productRespository.findAll().contains(product)){
             productRespository.addProduct(product);
         }
-        Post post = new Post(
-                postRepository.findAll().size(),
-                postRequestDto.user_id(),
-                postRequestDto.category(),
-                postRequestDto.date(),
-                product,
-                postRequestDto.price()
-        );
+        Post post = mapper.convertValue(postRequestDto, Post.class);
         postRepository.addPost(post);
         return new MessageDto("Publicación creada con éxito");
     }
