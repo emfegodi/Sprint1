@@ -1,17 +1,19 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
+import com.bootcamp.be_java_hisp_w25_g9.dto.UserDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowersDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FolowersCountDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.NoUsersFoundException;
+import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
+import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.*;
-import com.bootcamp.be_java_hisp_w25_g9.model.*;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import com.bootcamp.be_java_hisp_w25_g9.model.Client;
-import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.dto.UserDtoMixIn;
 
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
-    private IUserRepository userRepository;
+    private final IUserRepository userRepository;
     ObjectMapper mapper = new ObjectMapper();
 
     public UserService(IUserRepository userRepository) {
@@ -64,7 +66,25 @@ public class UserService implements IUserService {
 
     @Override
     public FollowersDto getFollowers(int userId) {
-        return null;
+
+        List<User> users = userRepository.findAll();
+        if (users == null || users.isEmpty()) throw new NoUsersFoundException("There are no users in the repository");
+
+        List<User> sellerReceived = users.stream().filter(user -> user.getUserId() == userId).toList();
+        if (sellerReceived.isEmpty()) throw new NoUsersFoundException("The seller was not found");
+
+        List<UserDto> followers = users.stream()
+                .filter(user -> user.getFollowed().stream().anyMatch(seller -> seller.getUserId() == userId))
+                .map(user -> new UserDto(user.getUserId(), user.getUserName()))
+                .toList();
+
+        if (followers.isEmpty()) throw new NoUsersFoundException("The seller does not have followers");
+
+        return new FollowersDto(
+                userId,
+                sellerReceived.get(0).getUserName(),
+                followers
+        );
     }
 
     @Override

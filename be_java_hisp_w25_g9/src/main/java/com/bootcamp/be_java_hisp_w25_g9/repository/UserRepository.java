@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class UserRespository implements IUserRepository {
+public class UserRepository implements IUserRepository {
 
     List<User> userList = new ArrayList<>();
 
-    public UserRespository(){
+    public UserRepository(){
         loadUserList();
     }
 
@@ -26,7 +26,7 @@ public class UserRespository implements IUserRepository {
 
     @Override
     public List<User> findAll(){
-        return null;
+        return this.userList;
     }
     public boolean userExists(long userId){
         Optional<User> userOpt = userList.stream().filter(u -> u.getUserId()==userId).findFirst();

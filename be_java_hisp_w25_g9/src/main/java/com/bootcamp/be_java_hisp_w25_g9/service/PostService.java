@@ -12,6 +12,7 @@ import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRespository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
@@ -21,23 +22,19 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PostService implements IPostService {
-
-    @Autowired
-    private IPostRepository postRepository;
+    private final IPostRepository postRepository;
+    private final IUserRepository userRepository;
+    private final IProductRespository productRespository;
     ObjectMapper mapper = new ObjectMapper();
 
-    public PostService(IPostRepository postRepository) {
+    public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRespository productRespository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
+        this.productRespository = productRespository;
         mapper.addMixIn(Product.class, ProductDtoMixIn.class);
         mapper.addMixIn(Post.class, PostResponseDtoMixin.class);
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
     }
-
-    @Autowired
-    private IUserRepository userRepository;
-
-    @Autowired
-    private IProductRespository productRespository;
 
     @Override
     public MessageDto createPost(PostRequestDto postRequestDto) {
