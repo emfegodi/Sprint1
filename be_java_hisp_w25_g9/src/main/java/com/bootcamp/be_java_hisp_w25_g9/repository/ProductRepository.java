@@ -21,7 +21,7 @@ public class ProductRepository implements IProductRepository {
     }
 
     public List<Product> findAll(){
-        return null;
+        return productList;
     }
 
     public void loadProductList(){
