@@ -14,7 +14,7 @@ import com.bootcamp.be_java_hisp_w25_g9.model.Product;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
-import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRespository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,13 +31,13 @@ import java.util.List;
 public class PostService implements IPostService {
     private final IPostRepository postRepository;
     private final IUserRepository userRepository;
-    private final IProductRespository productRespository;
+    private final IProductRepository productRepository;
     ObjectMapper mapper = new ObjectMapper();
 
-    public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRespository productRespository) {
+    public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRepository productRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.productRespository = productRespository;
+        this.productRepository = productRepository;
         mapper.addMixIn(Product.class, ProductDtoMixIn.class);
         mapper.addMixIn(Post.class, PostResponseDtoMixin.class);
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
@@ -57,8 +57,8 @@ public class PostService implements IPostService {
                 postRequestDto.product().color(),
                 postRequestDto.product().notes()
         );
-        if (!productRespository.findAll().contains(product)){
-            productRespository.addProduct(product);
+        if (!productRepository.findAll().contains(product)){
+            productRepository.addProduct(product);
         }
         Post post = new Post(
                 postRepository.findAll().size(),

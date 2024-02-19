@@ -44,8 +44,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followed/list")
-    public ResponseEntity<FollowedDto> getFollowedList(@PathVariable int userId){
-
-        return  new ResponseEntity<>(service.getFollowed(userId), HttpStatus.OK);
+    public ResponseEntity<FollowedDto> getFollowedList(@PathVariable int userId, @RequestParam(value = "order", required = false) String order){
+        if (order != null) return new ResponseEntity<>(service.getFollowed(userId, order), HttpStatus.OK);
+        return new ResponseEntity<>(service.getFollowed(userId), HttpStatus.OK);
     }
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.bootcamp.be_java_hisp_w25_g9.model.Client;
 import com.bootcamp.be_java_hisp_w25_g9.dto.UserDtoMixIn;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,13 +100,10 @@ public class UserService implements IUserService {
     @Override
     public FollowersDto getFollowers(int userId) {
 
-        List<User> users = userRepository.findAll();
-        if (users == null || users.isEmpty()) throw new NoUsersFoundException("There are no users in the repository");
+        User sellerReceived = userRepository.getUserById(userId);
+        if (sellerReceived == null) throw new NoUsersFoundException("The seller was not found");
 
-        List<User> sellerReceived = users.stream().filter(user -> user.getUserId() == userId).toList();
-        if (sellerReceived.isEmpty()) throw new NoUsersFoundException("The seller was not found");
-
-        List<UserDto> followers = users.stream()
+        List<UserDto> followers = userRepository.findAll().stream()
                 .filter(user -> user.getFollowed().stream().anyMatch(seller -> seller.getUserId() == userId))
                 .map(user -> new UserDto(user.getUserId(), user.getUserName()))
                 .toList();
@@ -114,23 +112,60 @@ public class UserService implements IUserService {
 
         return new FollowersDto(
                 userId,
-                sellerReceived.get(0).getUserName(),
+                sellerReceived.getUserName(),
                 followers
         );
     }
 
     @Override
     public FollowersDto getFollowers(int userId, String order) {
-        return null;
+        this.validateOrderInput(order);
+
+        FollowersDto followers = this.getFollowers(userId);
+
+        if(order.equalsIgnoreCase("name_desc")) return new FollowersDto(
+                followers.user_id(),
+                followers.user_name(),
+                followers.followed().stream().sorted(Comparator.comparing(UserDto::user_name).reversed()).toList()
+        );
+        return new FollowersDto(
+                followers.user_id(),
+                followers.user_name(),
+                followers.followed().stream().sorted(Comparator.comparing(UserDto::user_name)).toList()
+        );
     }
 
     @Override
     public FollowedDto getFollowed(int userId) {
-        return null;
+        User user = userRepository.getUserById(userId);
+        if (user == null) throw new NotFoundException("User not found");
+        if (user.getFollowed().isEmpty()) throw new NoUsersFoundException("The user does not follow any seller");
+        return new FollowedDto(
+                userId,
+                user.getUserName(),
+                user.getFollowed().stream().map(seller -> new UserDto(seller.getUserId(), seller.getUserName())).toList()
+        );
     }
 
     @Override
     public FollowedDto getFollowed(int userId, String order) {
-        return null;
+        this.validateOrderInput(order);
+
+        FollowedDto followedDto = getFollowed(userId);
+
+        if (order.equalsIgnoreCase("name_desc")) return new FollowedDto(
+                followedDto.user_id(),
+                followedDto.user_name(),
+                followedDto.followed().stream().sorted(Comparator.comparing(UserDto::user_name).reversed()).toList());
+
+        return new FollowedDto(
+                followedDto.user_id(),
+                followedDto.user_name(),
+                followedDto.followed().stream().sorted(Comparator.comparing(UserDto::user_name)).toList());
+    }
+
+    private void validateOrderInput(String order){
+        boolean isValidOrder = !order.equalsIgnoreCase("name_desc") && !order.equalsIgnoreCase("name_asc");
+        if (isValidOrder) throw new BadRequestException("The order " + order + " is not valid");
     }
 }
