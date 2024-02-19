@@ -1,6 +1,8 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
+import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
@@ -8,11 +10,13 @@ import com.bootcamp.be_java_hisp_w25_g9.model.Post;
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRespository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,6 +24,14 @@ public class PostService implements IPostService {
 
     @Autowired
     private IPostRepository postRepository;
+    ObjectMapper mapper = new ObjectMapper();
+
+    public PostService(IPostRepository postRepository) {
+        this.postRepository = postRepository;
+        mapper.addMixIn(Product.class, ProductDtoMixIn.class);
+        mapper.addMixIn(Post.class, PostResponseDtoMixin.class);
+        mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
+    }
 
     @Autowired
     private IUserRepository userRepository;

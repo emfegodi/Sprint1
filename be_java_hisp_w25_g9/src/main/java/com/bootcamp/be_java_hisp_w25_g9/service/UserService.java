@@ -8,7 +8,11 @@ import com.bootcamp.be_java_hisp_w25_g9.exceptions.*;
 import com.bootcamp.be_java_hisp_w25_g9.model.*;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IUserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import com.bootcamp.be_java_hisp_w25_g9.model.Client;
+import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
+import com.bootcamp.be_java_hisp_w25_g9.dto.UserDtoMixIn;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +20,12 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
     private IUserRepository userRepository;
+    ObjectMapper mapper = new ObjectMapper();
 
     public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
+        mapper.addMixIn(Client.class, UserDtoMixIn.class);
+        mapper.addMixIn(Seller.class, UserDtoMixIn.class);
     }
 
     @Override
@@ -46,7 +53,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public MessageDto unfollow(int uerId, int userIdToUnfollow) {
+    public MessageDto unfollow(int userId, int userIdToUnfollow) {
         return null;
     }
 
