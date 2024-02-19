@@ -16,14 +16,19 @@ import java.util.Optional;
 @Service
 public class UserService implements IUserService {
     private IUserRepository userRepository;
+
+    public UserService(IUserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
     @Override
     public MessageDto follow(int userId, int userIdToFollow) {
         if(userId == userIdToFollow)
             throw new BadRequestException("El usuario no puede seguirse asi mismo");
 
-        if(userRepository.userExists(userId))
+        if(!userRepository.userExists(userId))
             throw new BadRequestException("El cliente no existe");
-        if(userRepository.userExists(userIdToFollow))
+        if(!userRepository.userExists(userIdToFollow))
             throw new BadRequestException("El vendedor no existe");
 
         Client client = (Client) userRepository.getUserById(userId);
@@ -31,7 +36,7 @@ public class UserService implements IUserService {
 
         List<Seller> followedList = client.getFollowed();
         Optional<Seller> sellerFollowed = followedList.stream().filter(u -> u.getUserId()==userIdToFollow).findFirst();
-        if(sellerFollowed.isEmpty())
+        if(sellerFollowed.isPresent())
             throw new BadRequestException("No se puede seguir a un vendedor que ya se esta siguiendo");
         followedList.add(seller);
 
