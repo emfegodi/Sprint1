@@ -25,10 +25,10 @@ public class UserController {
         return  new ResponseEntity<>(service.follow(userId, userIdToFollow), HttpStatus.OK);
     }
 
-    @PostMapping("/{userId}/unfollow/{userIdToFollow}")
-    public ResponseEntity<MessageDto> unfollowUser(@PathVariable int userId, @PathVariable int userIdToFollow){
+    @PostMapping("/{userId}/unfollow/{userIdToUnfollow}")
+    public ResponseEntity<MessageDto> unfollowUser(@PathVariable int userId, @PathVariable int userIdToUnfollow){
 
-        return  new ResponseEntity<>(service.unfollow(userId, userIdToFollow), HttpStatus.OK);
+        return new ResponseEntity<>(service.unfollow(userId, userIdToUnfollow), HttpStatus.OK);
     }
 
     @GetMapping("/{userId}/followers/count")
@@ -44,8 +44,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followed/list")
-    public ResponseEntity<FollowedDto> getFollowedList(@PathVariable int userId){
-
-        return  new ResponseEntity<>(service.getFollowed(userId), HttpStatus.OK);
+    public ResponseEntity<FollowedDto> getFollowedList(@PathVariable int userId, @RequestParam(value = "order", required = false) String order){
+        if (order != null) return new ResponseEntity<>(service.getFollowed(userId, order), HttpStatus.OK);
+        return new ResponseEntity<>(service.getFollowed(userId), HttpStatus.OK);
     }
 }
