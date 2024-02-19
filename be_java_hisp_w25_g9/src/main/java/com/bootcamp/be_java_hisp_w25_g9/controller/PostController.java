@@ -17,13 +17,12 @@ public class PostController{
     }
 
     @PostMapping("/post")
-    public ResponseEntity<?> insertNewPost(@RequestBody  PostRequestDto newPost){
+    public ResponseEntity<?> insertNewPost(@RequestBody PostRequestDto newPost){
         return new ResponseEntity<>(postService.createPost(newPost), HttpStatus.OK);
     }
 
     @GetMapping("/followed/{userId}/list")
-    public ResponseEntity<?> getFollowedPostOrderByDate(@PathVariable int userId, @RequestParam(value = "order", required = false) String order){
-        //TODO: Make the flow when the order is null
+    public ResponseEntity<?> getFollowedPostOrderByDate(@PathVariable int userId, @RequestParam("order") String order){
         return new ResponseEntity<>(postService.getPost(userId, order),HttpStatus.OK);
     }
 

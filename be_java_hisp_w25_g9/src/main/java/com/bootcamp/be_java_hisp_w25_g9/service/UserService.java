@@ -8,27 +8,54 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NoUsersFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.*;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IUserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
+import com.bootcamp.be_java_hisp_w25_g9.model.Client;
+import com.bootcamp.be_java_hisp_w25_g9.dto.UserDtoMixIn;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService implements IUserService {
     private final IUserRepository userRepository;
+    ObjectMapper mapper = new ObjectMapper();
 
     public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
+        mapper.addMixIn(Client.class, UserDtoMixIn.class);
+        mapper.addMixIn(Seller.class, UserDtoMixIn.class);
     }
 
     @Override
     public MessageDto follow(int userId, int userIdToFollow) {
-        return null;
+        if(userId == userIdToFollow)
+            throw new BadRequestException("El usuario no puede seguirse asi mismo");
+
+        if(!userRepository.userExists(userId))
+            throw new BadRequestException("El cliente no existe");
+        if(!userRepository.userExists(userIdToFollow))
+            throw new BadRequestException("El vendedor no existe");
+
+        Client client = (Client) userRepository.getUserById(userId);
+        Seller seller = (Seller) userRepository.getUserById(userIdToFollow);
+
+        List<Seller> followedList = client.getFollowed();
+        Optional<Seller> sellerFollowed = followedList.stream().filter(u -> u.getUserId()==userIdToFollow).findFirst();
+        if(sellerFollowed.isPresent())
+            throw new BadRequestException("No se puede seguir a un vendedor que ya se esta siguiendo");
+        followedList.add(seller);
+
+        userRepository.save(client);
+
+        return new MessageDto("Vendedor seguido con exito");
     }
 
     @Override
-    public MessageDto unfollow(int uerId, int userIdToUnfollow) {
+    public MessageDto unfollow(int userId, int userIdToUnfollow) {
         return null;
     }
 
@@ -43,8 +70,8 @@ public class UserService implements IUserService {
         List<User> users = userRepository.findAll();
         if (users == null || users.isEmpty()) throw new NoUsersFoundException("There are no users in the repository");
 
-        User sellerReceived = users.stream().filter(user -> user.getUserId() == userId).toList().get(0);
-        if (sellerReceived == null) throw new NoUsersFoundException("The seller was not found");
+        List<User> sellerReceived = users.stream().filter(user -> user.getUserId() == userId).toList();
+        if (sellerReceived.isEmpty()) throw new NoUsersFoundException("The seller was not found");
 
         List<UserDto> followers = users.stream()
                 .filter(user -> user.getFollowed().stream().anyMatch(seller -> seller.getUserId() == userId))
@@ -55,7 +82,7 @@ public class UserService implements IUserService {
 
         return new FollowersDto(
                 userId,
-                sellerReceived.getUserName(),
+                sellerReceived.get(0).getUserName(),
                 followers
         );
     }

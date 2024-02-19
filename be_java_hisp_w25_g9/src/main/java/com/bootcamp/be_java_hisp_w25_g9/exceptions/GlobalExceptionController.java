@@ -15,4 +15,14 @@ public class GlobalExceptionController {
         return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.NOT_FOUND);
     }
     
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<MessageDto> badRequest(BadRequestException e){
+        MessageDto messageDto = new MessageDto(e.getMessage());
+        return new ResponseEntity<>(messageDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> notFound (NotFoundException e){
+        return new ResponseEntity<>(new MessageDto(e.getMessage()), HttpStatus.NOT_FOUND);
+    }
 }
