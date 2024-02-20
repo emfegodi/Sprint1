@@ -8,6 +8,8 @@ public abstract class PostRequestDtoMixin {
     @JsonProperty("user_id")
     private int userId;
 
+    @JsonProperty("post_id")
+    private int id;
     @JsonProperty("date")
     private LocalDate date;
 
