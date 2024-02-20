@@ -16,12 +16,19 @@ public class ProductRepository implements IProductRepository {
         loadProductList();
     }
 
-    public String addProduct(Product product){
-        return null;
+    @Override
+    public void addProduct(Product product){
+        productList.add(product);
     }
 
+    @Override
     public List<Product> findAll(){
         return productList;
+    }
+
+    @Override
+    public Product getProductById(int id) {
+        return productList.stream().filter(x -> x.getProductId() == id).findFirst().orElse(null);
     }
 
     public void loadProductList(){
