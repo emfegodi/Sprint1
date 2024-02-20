@@ -5,6 +5,7 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.PromoProductsCountDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
@@ -111,6 +112,22 @@ public class PostService implements IPostService {
         post.setId(postRepository.findAll().size()+1);
         postRepository.addPost(post);
         return new MessageDto("Publicación creada con éxito");
+    }
+
+    @Override
+    public PromoProductsCountDto getPromoPostCount(int userId) {
+        User seller = userRepository.getUserById(userId);
+        if (seller == null || !seller.getClass().equals(Seller.class)){
+            throw new NotFoundException("El usuario no se encuentra o no es vendedor");
+        }
+        Long postListCount = postRepository.findAll().stream()
+                .filter(x -> x.isHasPromo() && x.getUserId()==userId)
+                .map(Post::getProduct).distinct()
+                .count();
+        if (postListCount.equals(0L)){
+            throw new NotFoundException("No hay publicaciones con productos en descuento para ese vendedor");
+        }
+        return new PromoProductsCountDto(userId, seller.getUserName(), Math.toIntExact(postListCount));
     }
 
     public void verifyPost(PostRequestDto postRequestDto){
