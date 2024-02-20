@@ -2,13 +2,11 @@ package com.bootcamp.be_java_hisp_w25_g9.repository;
 
 import com.bootcamp.be_java_hisp_w25_g9.model.Post;
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
-import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -20,12 +18,12 @@ public class PostRepository implements IPostRepository {
         loadPostList();
     }
 
-    public String addPost(Post post){
-        return null;
+    public void addPost(Post post){
+        postList.add(post);
     }
 
     public List<Post> findAll(){
-        return null;
+        return postList;
     }
 
     public void loadPostList(){
