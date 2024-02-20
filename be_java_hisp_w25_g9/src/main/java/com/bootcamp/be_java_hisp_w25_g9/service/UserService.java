@@ -101,14 +101,15 @@ public class UserService implements IUserService {
     public FollowersDto getFollowers(int userId) {
 
         User sellerReceived = userRepository.getUserById(userId);
-        if (sellerReceived == null) throw new NoUsersFoundException("The seller was not found");
+        if (sellerReceived == null) throw new NoUsersFoundException("El vendedor no fue encontrado");
+        if (sellerReceived.getClass() != Seller.class) throw new BadRequestException("El usuario no es un vendedor");
 
         List<UserDto> followers = userRepository.findAll().stream()
                 .filter(user -> user.getFollowed().stream().anyMatch(seller -> seller.getUserId() == userId))
                 .map(user -> new UserDto(user.getUserId(), user.getUserName()))
                 .toList();
 
-        if (followers.isEmpty()) throw new NoUsersFoundException("The seller does not have followers");
+        if (followers.isEmpty()) throw new NoUsersFoundException("El vendedor no tiene seguidores");
 
         return new FollowersDto(
                 userId,
@@ -138,8 +139,8 @@ public class UserService implements IUserService {
     @Override
     public FollowedDto getFollowed(int userId) {
         User user = userRepository.getUserById(userId);
-        if (user == null) throw new NotFoundException("User not found");
-        if (user.getFollowed().isEmpty()) throw new NoUsersFoundException("The user does not follow any seller");
+        if (user == null) throw new NotFoundException("Usuario no encontrado");
+        if (user.getFollowed().isEmpty()) throw new NoUsersFoundException("El usuario no esta siguiendo a ningún vendedor");
         return new FollowedDto(
                 userId,
                 user.getUserName(),
@@ -166,6 +167,6 @@ public class UserService implements IUserService {
 
     private void validateOrderInput(String order){
         boolean isValidOrder = !order.equalsIgnoreCase("name_desc") && !order.equalsIgnoreCase("name_asc");
-        if (isValidOrder) throw new BadRequestException("The order " + order + " is not valid");
+        if (isValidOrder) throw new BadRequestException("El orden ingresado " + order + " no es válido");
     }
 }

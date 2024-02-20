@@ -1,24 +1,21 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
-import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
-import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Post;
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
-import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRepository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.stereotype.Service;

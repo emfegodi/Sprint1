@@ -38,8 +38,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followers/list")
-    public ResponseEntity<FollowersDto> getFollowersList(@PathVariable int userId){
-
+    public ResponseEntity<FollowersDto> getFollowersList(@PathVariable int userId, @RequestParam(value = "order", required = false) String order){
+        if (order != null) return new ResponseEntity<>(service.getFollowers(userId, order), HttpStatus.OK);
         return  new ResponseEntity<>(service.getFollowers(userId), HttpStatus.OK);
     }
 
