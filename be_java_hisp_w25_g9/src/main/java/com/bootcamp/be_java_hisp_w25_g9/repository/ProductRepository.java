@@ -1,14 +1,14 @@
 package com.bootcamp.be_java_hisp_w25_g9.repository;
 
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
-import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRespository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ProductRepository implements IProductRespository {
+public class ProductRepository implements IProductRepository {
 
     List<Product> productList = new ArrayList<>();
 
