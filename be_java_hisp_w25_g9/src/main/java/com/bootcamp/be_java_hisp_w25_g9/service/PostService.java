@@ -7,7 +7,6 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Post;
@@ -21,6 +20,7 @@ import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -44,7 +44,6 @@ public class PostService implements IPostService {
         this.productRespository = productRespository;
         mapper.registerModule(new JavaTimeModule());
         mapper.addMixIn(Product.class, ProductDtoMixIn.class);
-        mapper.addMixIn(Post.class, PostResponseDtoMixin.class);
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
     }
 
@@ -109,7 +108,7 @@ public class PostService implements IPostService {
                                 .sorted(Comparator.comparing(PostResponseDto::date)).toList());
             }
             case "date_desc" -> {
-                return followedPost = getPost(userId);
+                return getPost(userId);
             }
             default -> throw new BadRequestException(MessageFormat.format("{0} no es valido, recuerde que debe ingresar 'date_asc' o 'date_desc'", order));
         }

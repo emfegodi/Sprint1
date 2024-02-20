@@ -25,7 +25,7 @@ public class PostRepository implements IPostRepository {
     }
 
     public List<Post> findAll(){
-        return null;
+        return postList;
     }
 
     public void loadPostList(){
