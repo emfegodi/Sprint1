@@ -22,7 +22,8 @@ public class PostController{
     }
 
     @GetMapping("/followed/{userId}/list")
-    public ResponseEntity<?> getFollowedPostOrderByDate(@PathVariable int userId, @RequestParam("order") String order){
+    public ResponseEntity<?> getFollowedPostOrderByDate(@PathVariable int userId, @RequestParam(value="order", required = false) String order){
+        if(order == null) return new ResponseEntity<>(postService.getPost(userId), HttpStatus.OK);
         return new ResponseEntity<>(postService.getPost(userId, order),HttpStatus.OK);
     }
 
