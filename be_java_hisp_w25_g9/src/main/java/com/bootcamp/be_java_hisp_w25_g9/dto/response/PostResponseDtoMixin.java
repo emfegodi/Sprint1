@@ -2,6 +2,8 @@ package com.bootcamp.be_java_hisp_w25_g9.dto.response;
 
 import java.time.LocalDate;
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class PostResponseDtoMixin {
@@ -22,5 +24,10 @@ public abstract class PostResponseDtoMixin {
 
     @JsonProperty("price")
     private double price;
-
+    
+    @JsonProperty("has_promo")
+    private boolean hasPromo;
+    
+    @JsonProperty("discount")
+    private double discount;
 }

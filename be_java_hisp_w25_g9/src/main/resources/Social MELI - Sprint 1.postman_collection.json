@@ -36,7 +36,7 @@
 						},
 						{
 							"key": "userIdToFollow",
-							"value": "29"
+							"value": "26"
 						}
 					]
 				}
@@ -373,7 +373,7 @@
 					"variable": [
 						{
 							"key": "userId",
-							"value": "1"
+							"value": "26"
 						}
 					]
 				}
@@ -987,7 +987,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"user_id\": 26,\n    \"date\": \"15-02-2024\",\n    \"product\": {\n        \"product_id\": 19,\n        \"product_name\": \"Silla Gamer 2\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50\n}",
+					"raw": "{\n    \"user_id\": 26,\n    \"date\": \"15-02-2024\",\n    \"product\": {\n        \"product_id\": 20,\n        \"product_name\": \"Silla Gamer 2\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -2595,6 +2595,561 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"message\": \"date_de no es valido, recuerde que debe ingresar date_asc o date_desc\"\n}"
+				}
+			]
+		},
+		{
+			"name": "10F - Dar de alta nueva publicación promocional",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": 26,\n    \"date\": \"20-02-2024\",\n    \"product\": {\n        \"product_id\": 31,\n        \"product_name\": \"Silla Gamer Y\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50,\n    \"has_promo\": true,\n    \"discount\": 0.3\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/products/promo-post",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"products",
+						"promo-post"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "05 - Dar de alta nueva publicación",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 26,\n    \"date\": \"29-04-2021\",\n    \"product\": {\n        \"product_id\": 16,\n        \"product_name\": \"Silla Gamer\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/post",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"post"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Feb 2024 14:24:02 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Publicación creada con éxito\"\n}"
+				},
+				{
+					"name": "05 - Dar de alta nueva publicación",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 26,\n    \"date\": \"29-04-2021\",\n    \"product\": {\n        \"product_id\": 1,\n        \"product_name\": \"Silla Gamer\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/post",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"post"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Feb 2024 14:24:13 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"El identificador del producto no corresponde con el registrado\"\n}"
+				},
+				{
+					"name": "05 - Dar de alta nueva publicación",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 1,\n    \"date\": \"29-04-2021\",\n    \"product\": {\n        \"product_id\": 17,\n        \"product_name\": \"Silla Gamer 2\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/post",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"post"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Feb 2024 14:24:49 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"El usuario no se encuentra o no es vendedor\"\n}"
+				},
+				{
+					"name": "05 - Dar de alta nueva publicación",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 100,\n    \"date\": \"29-04-2021\",\n    \"product\": {\n        \"product_id\": 17,\n        \"product_name\": \"Silla Gamer 2\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/post",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"post"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Feb 2024 14:25:05 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"El usuario no se encuentra o no es vendedor\"\n}"
+				},
+				{
+					"name": "05 - Dar de alta nueva publicación",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 30,\n    \"date\": \"29-04-2021\",\n    \"product\": {\n        \"product_id\": 17,\n        \"product_name\": \"Silla Gamer 2\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/post",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"post"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Feb 2024 14:25:13 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Publicación creada con éxito\"\n}"
+				},
+				{
+					"name": "10F - Dar de alta nueva publicación promocional",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 26,\n    \"date\": \"20-02-2024\",\n    \"product\": {\n        \"product_id\": 31,\n        \"product_name\": \"Silla Gamer Y\",\n        \"type\": \"Gamer\",\n        \"brand\": \"Racer\",\n        \"color\": \"Red & Black\",\n        \"notes\": \"Special Edition\"\n    },\n    \"category\": 100,\n    \"price\": 1500.50,\n    \"has_promo\": true,\n    \"discount\": 0.3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/promo-post",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"promo-post"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Feb 2024 21:04:35 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Publicación creada con éxito\"\n}"
+				}
+			]
+		},
+		{
+			"name": "11F - Contar publicaciones promocionales de un vendedor",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/products/promo-post/count?user_id=26",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"products",
+						"promo-post",
+						"count"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "user_id",
+							"value": "26"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "11F - Contar seguidores de un vendedor",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/promo-post/count?user_id=26",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"promo-post",
+								"count"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "user_id",
+									"value": "26"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Feb 2024 21:08:35 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"user_id\": 26,\n    \"user_name\": \"Chase Sanchez\",\n    \"promo_products_count\": 4\n}"
+				}
+			]
+		},
+		{
+			"name": "12F - Listar publicaciones promocionales de un vendedor",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/products/promo-post/list?user_id=26",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"products",
+						"promo-post",
+						"list"
+					],
+					"query": [
+						{
+							"key": "user_id",
+							"value": "26"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "12F - Listar publicaciones promocionales de un vendedor",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/promo-post/list?user_id=26",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"promo-post",
+								"list"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "26"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Tue, 20 Feb 2024 21:07:49 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"post_id\": 20,\n        \"user_id\": 26,\n        \"date\": \"20-02-2024\",\n        \"product\": {\n            \"product_id\": 31,\n            \"product_name\": \"Silla Gamer Y\",\n            \"type\": \"Gamer\",\n            \"brand\": \"Racer\",\n            \"color\": \"Red & Black\",\n            \"notes\": \"Special Edition\"\n        },\n        \"category\": 100,\n        \"price\": 1500.5,\n        \"has_promo\": true,\n        \"discount\": 0.3\n    },\n    {\n        \"post_id\": 21,\n        \"user_id\": 26,\n        \"date\": \"20-02-2024\",\n        \"product\": {\n            \"product_id\": 31,\n            \"product_name\": \"Silla Gamer Y\",\n            \"type\": \"Gamer\",\n            \"brand\": \"Racer\",\n            \"color\": \"Red & Black\",\n            \"notes\": \"Special Edition\"\n        },\n        \"category\": 100,\n        \"price\": 1500.5,\n        \"has_promo\": true,\n        \"discount\": 0.3\n    },\n    {\n        \"post_id\": 22,\n        \"user_id\": 26,\n        \"date\": \"20-02-2024\",\n        \"product\": {\n            \"product_id\": 31,\n            \"product_name\": \"Silla Gamer Y\",\n            \"type\": \"Gamer\",\n            \"brand\": \"Racer\",\n            \"color\": \"Red & Black\",\n            \"notes\": \"Special Edition\"\n        },\n        \"category\": 100,\n        \"price\": 1500.5,\n        \"has_promo\": true,\n        \"discount\": 0.3\n    },\n    {\n        \"post_id\": 23,\n        \"user_id\": 26,\n        \"date\": \"20-02-2024\",\n        \"product\": {\n            \"product_id\": 31,\n            \"product_name\": \"Silla Gamer Y\",\n            \"type\": \"Gamer\",\n            \"brand\": \"Racer\",\n            \"color\": \"Red & Black\",\n            \"notes\": \"Special Edition\"\n        },\n        \"category\": 100,\n        \"price\": 1500.5,\n        \"has_promo\": true,\n        \"discount\": 0.3\n    }\n]"
 				}
 			]
 		}

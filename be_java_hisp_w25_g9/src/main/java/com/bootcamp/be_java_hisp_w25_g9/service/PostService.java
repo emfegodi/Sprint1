@@ -1,6 +1,9 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
+import com.bootcamp.be_java_hisp_w25_g9.dto.SellerPromoPostCountDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.UserDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.UserDtoMixIn;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
@@ -33,6 +36,7 @@ public class PostService implements IPostService {
     private final IUserRepository userRepository;
     private final IProductRepository productRepository;
     ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapperDiscount = new ObjectMapper();
 
     public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRepository productRepository) {
         this.postRepository = postRepository;
@@ -41,6 +45,7 @@ public class PostService implements IPostService {
         mapper.registerModule(new JavaTimeModule());
         mapper.addMixIn(Product.class, ProductDtoMixIn.class);
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
+        mapper.addMixIn(User.class, UserDtoMixIn.class);
     }
 
     @Override
@@ -102,7 +107,6 @@ public class PostService implements IPostService {
 
     @Override
     public FollowedPostsDto getPost(int userId, String order) {
-        FollowedPostsDto followedPost;
         switch (order){
             case "date_asc" -> {
                 return new FollowedPostsDto(
@@ -118,5 +122,38 @@ public class PostService implements IPostService {
             }
             default -> throw new BadRequestException(MessageFormat.format("{0} no es valido, recuerde que debe ingresar 'date_asc' o 'date_desc'", order));
         }
+    }
+
+    @Override
+    public MessageDto createPromoPost(PostRequestDto postRequestDto) {
+        if (postRequestDto.has_promo() != true)
+            throw new BadRequestException("El articulo que está creando debe ser promocional. Valor incorrecto.");
+        if (postRequestDto.discount() <= 0.0 || postRequestDto.discount() > 1.0)
+            throw new BadRequestException("Ingrese un valor de descuento válido");
+        return createPost(postRequestDto);
+    }
+
+    @Override
+    public UserDto getUserById(int userId) {
+        if(!userRepository.userExists(userId)) throw new NotFoundException(MessageFormat.format("El usuario con id {0} no existe",userId));
+        return mapper.convertValue(
+            userRepository.getUserById(userId), UserDto.class);
+    }
+
+    @Override
+    public List<PostResponseDto> getSellerPromoPosts(int userId) {
+        return postRepository.findAll().stream()
+        .filter(post -> post.isHasPromo() && post.getUserId() == userId)
+        .map(post -> mapper.convertValue(post, PostResponseDto.class))
+        .toList();
+    }
+
+    @Override
+    public SellerPromoPostCountDto getPromoPostCount(int userId) {
+        UserDto userDto = getUserById(userId);
+        List<PostResponseDto> promoPosts = getSellerPromoPosts(userId);
+        int promoPostsCount = promoPosts.size();
+
+        return new SellerPromoPostCountDto(userId, userDto.user_name(), promoPostsCount);
     }
 }

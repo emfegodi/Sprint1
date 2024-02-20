@@ -24,8 +24,21 @@ public class PostController{
     @GetMapping("/followed/{userId}/list")
     public ResponseEntity<?> getFollowedPostOrderByDate(@PathVariable int userId, @RequestParam(value="order", required = false) String order){
         if(order == null) return new ResponseEntity<>(postService.getPost(userId), HttpStatus.OK);
-        return new ResponseEntity<>(postService.getPost(userId, order),HttpStatus.OK);
+        return new ResponseEntity<>(postService.getPost(userId, order), HttpStatus.OK);
     }
 
+    @PostMapping("/promo-post")
+    public ResponseEntity<?> insertNewPromoPost(@RequestBody PostRequestDto newPost){
+        return new ResponseEntity<>(postService.createPromoPost(newPost), HttpStatus.OK);
+    }
 
+    @GetMapping("/promo-post/count")
+    public ResponseEntity<?> getPromoPostCount(@RequestParam(value="user_id", required = true) int userId){
+        return new ResponseEntity<>(postService.getPromoPostCount(userId), HttpStatus.OK);
+    }
+
+    @GetMapping("/promo-post/list")
+    public ResponseEntity<?> getPromoPostList(@RequestParam(value="user_id", required = true) int userId){
+        return new ResponseEntity<>(postService.getSellerPromoPosts(userId), HttpStatus.OK);
+    }
 }

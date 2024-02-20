@@ -21,4 +21,6 @@ public class Post {
     LocalDate date;
     Product product;
     double price;
+    boolean hasPromo = false;
+    double discount = 0.0;
 }
