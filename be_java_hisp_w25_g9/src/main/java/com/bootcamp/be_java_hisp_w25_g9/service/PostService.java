@@ -66,7 +66,8 @@ public class PostService implements IPostService {
 
     @Override
     public FollowedPostsDto getPost(int userId) {
-        return new FollowedPostsDto(userId, getPostsByuserId(userId));
+        return new FollowedPostsDto(userId, getPostsByuserId(userId).stream()
+                .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
     }
 
     public List<PostResponseDto> getPostsByuserId(int userId){
@@ -80,12 +81,13 @@ public class PostService implements IPostService {
         for (Seller seller : followedList) {
             lastestPosts.addAll(
                     postsLlist.stream()
-                            .sorted(Comparator.comparing(Post::getDate).reversed())
+
                             .filter(post -> {
-                                        return post.getUserId() == seller.getUserId() &&
-                                                compareDates(post.getDate(), LocalDate.now());
+                                            return compareDates(post.getDate(), LocalDate.now()) &&
+                                         post.getUserId() == seller.getUserId() ;
                                     }
-                            ).toList());
+                            )
+                            .toList());
         }
         if(lastestPosts.isEmpty()){
             throw new NotFoundException(MessageFormat.format("No se encontraron post de los vendedores seguidos del usuario {0}",userId));
@@ -110,7 +112,10 @@ public class PostService implements IPostService {
                                 .sorted(Comparator.comparing(PostResponseDto::date)).toList());
             }
             case "date_desc" -> {
-                return getPost(userId);
+                return new FollowedPostsDto(
+                        userId,
+                        getPostsByuserId(userId).stream()
+                                .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
             }
             default -> throw new BadRequestException(MessageFormat.format("{0} no es valido, recuerde que debe ingresar 'date_asc' o 'date_desc'", order));
         }
