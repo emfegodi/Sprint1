@@ -10,7 +10,6 @@ import java.time.LocalDate;
 public record PostResponseDto(
         int post_id,
         int user_id,
-
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
         LocalDate date,
         ProductDto product,
