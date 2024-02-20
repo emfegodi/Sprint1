@@ -8,7 +8,9 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NoUsersFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.*;
+import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.bootcamp.be_java_hisp_w25_g9.model.Client;
 import com.bootcamp.be_java_hisp_w25_g9.dto.UserDtoMixIn;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +36,14 @@ public class UserService implements IUserService {
     @Override
     public MessageDto follow(int userId, int userIdToFollow) {
         if(userId == userIdToFollow)
-            throw new BadRequestException("El usuario no puede seguirse asi mismo");
+            throw new BadRequestException("El usuario no puede seguirse a sí mismo");
 
         if(!userRepository.userExists(userId))
             throw new BadRequestException("El cliente no existe");
         if(!userRepository.userExists(userIdToFollow))
             throw new BadRequestException("El vendedor no existe");
+        if(userRepository.getUserById(userIdToFollow).getClass() == Client.class)
+            throw new BadRequestException("Solo puede seguir vendedores");
 
         Client client = (Client) userRepository.getUserById(userId);
         Seller seller = (Seller) userRepository.getUserById(userIdToFollow);
@@ -56,24 +61,49 @@ public class UserService implements IUserService {
 
     @Override
     public MessageDto unfollow(int userId, int userIdToUnfollow) {
-        return null;
+        if (userId == userIdToUnfollow)
+            throw new BadRequestException("El usuario no puede dejar de seguirse a sí mismo");
+        if(!userRepository.userExists(userId))
+            throw new BadRequestException("El cliente no existe");
+        if(!userRepository.userExists(userIdToUnfollow))
+            throw new BadRequestException("El vendedor no existe");
+
+        Client client = (Client) userRepository.getUserById(userId);
+        Seller seller = (Seller) userRepository.getUserById(userIdToUnfollow);
+
+        List<Seller> followedList = client.getFollowed();
+        Optional<Seller> sellerFollowed = followedList.stream().filter(u -> u.getUserId() == userIdToUnfollow).findFirst();
+
+        if(!sellerFollowed.isPresent())
+            throw new BadRequestException("El vendedor no estaba en la lista de seguidos del cliente");
+
+        followedList.remove(seller);
+
+        return new MessageDto("El vendedor ha sido quitado de la lista de seguidos del cliente");
     }
 
     @Override
     public FolowersCountDto getFollowersCount(int userId) {
-        return null;
+
+        List<Seller> sellerList = userRepository.findAll().stream()
+                .flatMap(u -> u.getFollowed().stream()
+                        .filter(s -> s.getUserId() == userId)
+                )
+                .toList();
+
+        if (sellerList.isEmpty()) throw new NotFoundException("Vendedor no encontrado");
+        int count = sellerList.size();
+
+        return new FolowersCountDto(userId, sellerList.get(0).getUserName(), count);
     }
 
     @Override
     public FollowersDto getFollowers(int userId) {
 
-        List<User> users = userRepository.findAll();
-        if (users == null || users.isEmpty()) throw new NoUsersFoundException("There are no users in the repository");
+        User sellerReceived = userRepository.getUserById(userId);
+        if (sellerReceived == null) throw new NoUsersFoundException("The seller was not found");
 
-        List<User> sellerReceived = users.stream().filter(user -> user.getUserId() == userId).toList();
-        if (sellerReceived.isEmpty()) throw new NoUsersFoundException("The seller was not found");
-
-        List<UserDto> followers = users.stream()
+        List<UserDto> followers = userRepository.findAll().stream()
                 .filter(user -> user.getFollowed().stream().anyMatch(seller -> seller.getUserId() == userId))
                 .map(user -> new UserDto(user.getUserId(), user.getUserName()))
                 .toList();
@@ -82,23 +112,60 @@ public class UserService implements IUserService {
 
         return new FollowersDto(
                 userId,
-                sellerReceived.get(0).getUserName(),
+                sellerReceived.getUserName(),
                 followers
         );
     }
 
     @Override
     public FollowersDto getFollowers(int userId, String order) {
-        return null;
+        this.validateOrderInput(order);
+
+        FollowersDto followers = this.getFollowers(userId);
+
+        if(order.equalsIgnoreCase("name_desc")) return new FollowersDto(
+                followers.user_id(),
+                followers.user_name(),
+                followers.followed().stream().sorted(Comparator.comparing(UserDto::user_name).reversed()).toList()
+        );
+        return new FollowersDto(
+                followers.user_id(),
+                followers.user_name(),
+                followers.followed().stream().sorted(Comparator.comparing(UserDto::user_name)).toList()
+        );
     }
 
     @Override
     public FollowedDto getFollowed(int userId) {
-        return null;
+        User user = userRepository.getUserById(userId);
+        if (user == null) throw new NotFoundException("User not found");
+        if (user.getFollowed().isEmpty()) throw new NoUsersFoundException("The user does not follow any seller");
+        return new FollowedDto(
+                userId,
+                user.getUserName(),
+                user.getFollowed().stream().map(seller -> new UserDto(seller.getUserId(), seller.getUserName())).toList()
+        );
     }
 
     @Override
     public FollowedDto getFollowed(int userId, String order) {
-        return null;
+        this.validateOrderInput(order);
+
+        FollowedDto followedDto = getFollowed(userId);
+
+        if (order.equalsIgnoreCase("name_desc")) return new FollowedDto(
+                followedDto.user_id(),
+                followedDto.user_name(),
+                followedDto.followed().stream().sorted(Comparator.comparing(UserDto::user_name).reversed()).toList());
+
+        return new FollowedDto(
+                followedDto.user_id(),
+                followedDto.user_name(),
+                followedDto.followed().stream().sorted(Comparator.comparing(UserDto::user_name)).toList());
+    }
+
+    private void validateOrderInput(String order){
+        boolean isValidOrder = !order.equalsIgnoreCase("name_desc") && !order.equalsIgnoreCase("name_asc");
+        if (isValidOrder) throw new BadRequestException("The order " + order + " is not valid");
     }
 }
