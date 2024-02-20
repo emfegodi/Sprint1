@@ -55,11 +55,13 @@ public class PostService implements IPostService {
         Product product = mapper.convertValue(postRequestDto.product(), Product.class);
         Product productFromRepository = productRepository.getProductById(product.getProductId());
         if (productFromRepository == null){
+            product.setProductId(productRepository.findAll().size());
             productRepository.addProduct(product);
         } else if(productFromRepository != product){
             throw new BadRequestException("El identificador del producto no corresponde con el registrado");
         }
         Post post = mapper.convertValue(postRequestDto, Post.class);
+        product.setProductId(postRepository.findAll().size());
         postRepository.addPost(post);
         return new MessageDto("Publicación creada con éxito");
     }
