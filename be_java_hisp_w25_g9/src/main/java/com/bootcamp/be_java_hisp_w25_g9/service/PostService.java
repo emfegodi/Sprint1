@@ -117,17 +117,23 @@ public class PostService implements IPostService {
     @Override
     public PromoProductsCountDto getPromoPostCount(int userId) {
         User seller = userRepository.getUserById(userId);
+        int promoPostCount = getPromoPostList(userId).size();
+        return new PromoProductsCountDto(userId, seller.getUserName(), promoPostCount);
+    }
+
+    @Override
+    public List<PostRequestDto> getPromoPostList(int userId) {
+        User seller = userRepository.getUserById(userId);
         if (seller == null || !seller.getClass().equals(Seller.class)){
             throw new NotFoundException("El usuario no se encuentra o no es vendedor");
         }
-        Long postListCount = postRepository.findAll().stream()
+        List<PostRequestDto> promPostList = postRepository.findAll().stream()
                 .filter(x -> x.isHasPromo() && x.getUserId()==userId)
-                .map(Post::getProduct).distinct()
-                .count();
-        if (postListCount.equals(0L)){
+                .map(x -> mapper.convertValue(x, PostRequestDto.class)).toList();
+        if (promPostList.isEmpty()){
             throw new NotFoundException("No hay publicaciones con productos en descuento para ese vendedor");
         }
-        return new PromoProductsCountDto(userId, seller.getUserName(), Math.toIntExact(postListCount));
+        return promPostList;
     }
 
     public void verifyPost(PostRequestDto postRequestDto){
