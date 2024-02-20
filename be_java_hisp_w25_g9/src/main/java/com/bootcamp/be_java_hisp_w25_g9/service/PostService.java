@@ -6,19 +6,19 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Post;
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
-import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.stereotype.Service;
@@ -40,8 +40,7 @@ public class PostService implements IPostService {
     public PostService(IPostRepository postRepository, IUserRepository userRepository, IProductRepository productRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-
-        this.productRespository = productRespository;
+        this.productRepository = productRepository;
         mapper.registerModule(new JavaTimeModule());
         mapper.addMixIn(Product.class, ProductDtoMixIn.class);
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
@@ -54,8 +53,11 @@ public class PostService implements IPostService {
             throw new NotFoundException("El usuario no se encuentra o no es vendedor");
         }
         Product product = mapper.convertValue(postRequestDto.product(), Product.class);
-        if (!productRespository.findAll().contains(product)){
-            productRespository.addProduct(product);
+        Product productFromRepository = productRepository.getProductById(product.getProductId());
+        if (productFromRepository == null){
+            productRepository.addProduct(product);
+        } else if(productFromRepository != product){
+            throw new BadRequestException("El identificador del producto no corresponde con el registrado");
         }
         Post post = mapper.convertValue(postRequestDto, Post.class);
         postRepository.addPost(post);
