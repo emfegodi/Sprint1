@@ -8,5 +8,6 @@ public interface IPostService {
     MessageDto createPost(PostRequestDto postRequestDto);
     FollowedPostsDto getPost(int userId);
     FollowedPostsDto getPost(int userId, String order);
+    MessageDto createPromoPost(PostRequestDto postRequestDto);
 
 }

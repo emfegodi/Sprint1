@@ -27,5 +27,10 @@ public class PostController{
         return new ResponseEntity<>(postService.getPost(userId, order),HttpStatus.OK);
     }
 
+    @PostMapping("promo-post")
+    public ResponseEntity<?> addPromoPost(@RequestBody PostRequestDto promoPost){
+        return new ResponseEntity<>(postService.createPromoPost(promoPost), HttpStatus.OK);
+    }
+
 
 }

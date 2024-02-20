@@ -48,7 +48,7 @@ public class PostRepository implements IPostRepository {
         int postIdCounter = 1;
         for (Product product : productList) {
             Random rand = new Random();
-            postList.add(new Post(postIdCounter++, rand.nextInt(25, 50), rand.nextInt(40), currentDate, product, rand.nextDouble(50.00)));
+            postList.add(new Post(postIdCounter++, rand.nextInt(25, 50), rand.nextInt(40), currentDate, product, rand.nextDouble(50.00), rand.nextBoolean(), rand.nextDouble(50.00)));
         }
     }
 

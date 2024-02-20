@@ -14,6 +14,8 @@ public record PostRequestDto(
         LocalDate date,
         ProductDto product,
         int category,
-        double price
+        double price,
+        boolean has_promo,
+        double discount
 ) {
 }
