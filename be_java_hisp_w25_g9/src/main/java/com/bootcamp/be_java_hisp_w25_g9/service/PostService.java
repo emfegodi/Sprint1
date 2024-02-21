@@ -6,6 +6,7 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.SellerPromoPostsCountDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Post;
@@ -118,5 +119,25 @@ public class PostService implements IPostService {
             }
             default -> throw new BadRequestException(MessageFormat.format("{0} no es valido, recuerde que debe ingresar 'date_asc' o 'date_desc'", order));
         }
+    }
+
+    @Override
+    public SellerPromoPostsCountDto getSellerPromoPosts(int userId) {
+        if(!userRepository.userExists(userId))
+            throw new NotFoundException(MessageFormat.format("El usuario con id {0} no existe", userId));
+
+        User seller = userRepository.getUserById(userId);
+        if (seller.getClass() != Seller.class)
+            throw new BadRequestException("El usuario ingresado no es un vendedor");
+
+        List<Post> sellerPosts = postRepository.findAll().stream().filter(post -> post.getUserId() == userId).toList();
+        if(sellerPosts.isEmpty())
+            throw new NotFoundException("No existe ningún post publicado por este vendedor");
+
+        return new SellerPromoPostsCountDto(
+                seller.getUserId(),
+                seller.getUserName(),
+                (int) sellerPosts.stream().filter(Post::isHasPromo).count()
+        );
     }
 }

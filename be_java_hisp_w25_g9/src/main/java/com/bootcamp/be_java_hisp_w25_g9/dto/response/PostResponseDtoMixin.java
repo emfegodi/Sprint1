@@ -23,4 +23,10 @@ public abstract class PostResponseDtoMixin {
     @JsonProperty("price")
     private double price;
 
+    @JsonProperty("has_promo")
+    boolean hasPromo;
+
+    @JsonProperty("discount")
+    double discount;
+
 }
