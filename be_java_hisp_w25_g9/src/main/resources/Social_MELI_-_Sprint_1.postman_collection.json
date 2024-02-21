@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "b75cd575-fa53-46ba-96f0-5f143d7835d1",
+		"_postman_id": "3ba0197f-7b39-4872-a2b2-8893ab12d698",
 		"name": "Social MELI - Sprint 1",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "32839982"
+		"_exporter_id": "32839445"
 	},
 	"item": [
 		{
@@ -48,10 +48,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/follow/:userIdToFollow",
+							"raw": "http://localhost:8080/users/:userId/follow/:userIdToFollow",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":userId",
@@ -385,10 +387,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/followers/count",
+							"raw": "http://localhost:8080/users/:userId/followers/count",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":userId",
@@ -587,7 +591,8 @@
 							"value": "26"
 						}
 					]
-				}
+				},
+				"description": "Este endpoint devuelve la lista de los seguidores que el usuario tiene, se valida que el usuario sea un vendedor ya que solo estos pueden ser seguidos."
 			},
 			"response": [
 				{
@@ -596,10 +601,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/followers/list",
+							"raw": "http://localhost:8080/users/:userId/followers/list",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":userId",
@@ -798,7 +805,8 @@
 							"value": "4"
 						}
 					]
-				}
+				},
+				"description": "En este caso se devuelve la lista de los vendedores seguidos por un cliente, se muestra el id del vendedor y su nombre"
 			},
 			"response": [
 				{
@@ -807,10 +815,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/followed/list",
+							"raw": "http://localhost:8080/users/:userId/followed/list",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":userId",
@@ -1028,10 +1038,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/products/post",
+							"raw": "http://localhost:8080/products/post",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"products",
 								"post"
@@ -1349,10 +1361,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/followed/:userId/list",
+							"raw": "http://localhost:8080/products/followed/:userId/list",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"products",
 								"followed",
@@ -1564,10 +1578,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/unfollow/:userIdToUnfollow",
+							"raw": "http://localhost:8080/users/:userId/unfollow/:userIdToUnfollow",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":userId",
@@ -1720,7 +1736,8 @@
 							"value": "1"
 						}
 					]
-				}
+				},
+				"description": "En adicion al punto 03 se tiene la posibilidad de ordenar la lista de seguidores por orden alfabético, se tienen las mismas reglas y se agrega la regla de que el orden debe ser name_asc o name_desc"
 			},
 			"response": [
 				{
@@ -1729,10 +1746,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/followers/list?order=name_asc",
+							"raw": "http://localhost:8080/users/:userId/followers/list?order=name_asc",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":userId",
@@ -1978,12 +1997,12 @@
 			]
 		},
 		{
-			"name": "08 - Ordenar alfabéticamente los seguidores de un vendedor Copy",
+			"name": "08 - Ordenar alfabéticamente vendedores seguidos por un usuario",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/users/:userId/followed/list?order=name_as",
+					"raw": "{{baseUrl}}/users/:userId/followed/list?order=name_asc",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -1996,7 +2015,7 @@
 					"query": [
 						{
 							"key": "order",
-							"value": "name_as",
+							"value": "name_asc",
 							"description": "name_asc, name_desc"
 						},
 						{
@@ -2011,7 +2030,8 @@
 							"value": "1"
 						}
 					]
-				}
+				},
+				"description": "Se extiende el punto 04 agregando la posibilidad de ordenar por nombre, se valida que la variable order sea name_asc o name_desc"
 			},
 			"response": [
 				{
@@ -2020,10 +2040,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/:userId/followers/list?order=name_asc",
+							"raw": "http://localhost:8080/users/:userId/followers/list?order=name_asc",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"users",
 								":userId",
@@ -2338,7 +2360,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/products/followed/:userId/list?order=date_de",
+					"raw": "{{baseUrl}}/products/followed/:userId/list?order=date_desc",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -2351,7 +2373,7 @@
 					"query": [
 						{
 							"key": "order",
-							"value": "date_de",
+							"value": "date_desc",
 							"description": "date_asc, date_desc"
 						}
 					],
@@ -2370,10 +2392,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/products/followed/:userId/list?order=date_asc",
+							"raw": "http://localhost:8080/products/followed/:userId/list?order=date_asc",
+							"protocol": "http",
 							"host": [
-								"{{baseUrl}}"
+								"localhost"
 							],
+							"port": "8080",
 							"path": [
 								"products",
 								"followed",
