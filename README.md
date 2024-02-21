@@ -1,7 +1,17 @@
-# Acerca del proyecto
-## Social
-El proyecto se basa en la necesidad de generar una api para permitir que usuarios puedan seguir vendedores, agregando varias funcionalidades con el fin de hacer tener una experiencia completa
+# \#SocialMeli
 
+This repository contains the code for the Social MELI project. It contains:
 
-## Diagrama
-![Diagrama del proyecto](https://github.com/emfegodi/Sprint1/blob/main/be_java_hisp_w25_g9/src/main/resources/Sprint1Grupo9.drawio.png?raw=true)
+- [A UML diagram.](src/main/resources/Sprint1Grupo9.drawio.png)
+- [A Postman collection.](src/main/resources/Social_MELI_-_Sprint_1.postman_collection.json)
+
+For more details, import the Postman collection JSON file on Postman and open the collection's documentation.
+
+## Authors:
+
+- Cristian Castellanos
+- David Zambrano
+- Emmanuel Gómez
+- Jhoan Casallas
+- Jonathan Pinilla
+- Jhon Luengas

@@ -1,6 +1,6 @@
 # \#SocialMeli
 
-This repository contains the code for the Social MELI project. It contains a backend project, with:
+This repository contains the code for the Social MELI project. It contains:
 
 - [A UML diagram.](src/main/resources/Sprint1Grupo9.drawio.png)
 - [A Postman collection.](src/main/resources/Social_MELI_-_Sprint_1.postman_collection.json)
