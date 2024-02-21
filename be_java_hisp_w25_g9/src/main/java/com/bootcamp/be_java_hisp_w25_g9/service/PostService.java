@@ -5,14 +5,17 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PromoPostDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.*;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.*;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDtoMixin;
+import com.bootcamp.be_java_hisp_w25_g9.model.Post;
+import com.bootcamp.be_java_hisp_w25_g9.model.Product;
+import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
+import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IPostRepository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IUserRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.interfaces.IProductRepository;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IPostService;
@@ -71,7 +74,7 @@ public class PostService implements IPostService {
         if (productFromRepository == null){
             product.setProductId(productRepository.findAll().size());
             productRepository.addProduct(product);
-        } else if(productFromRepository != product){
+        } else if(!productFromRepository.equals(product)){
             throw new BadRequestException("El identificador del producto no corresponde con el registrado");
         }
         product.setProductId(postRepository.findAll().size());
@@ -80,10 +83,48 @@ public class PostService implements IPostService {
     @Override
     public FollowedPostsDto getPost(int userId) {
         return new FollowedPostsDto(userId, getPostsByuserId(userId).stream()
+                .map(post -> mapper.convertValue(post, PostResponseDto.class))
                 .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
     }
 
-    public List<PostResponseDto> getPostsByuserId(int userId){
+//    @Override
+//    public FollowedPostsDto getPromoPost(int userId) {
+//        return new FollowedPostsDto(
+//                userId,
+//                getPromoPostByUserId(userId).stream()
+//                        .map(post -> mapper.convertValue(post, PostResponseDto.class)).toList()
+//        );
+//    }
+//
+//    public List<PromoPost> getPromoPostByUserId(int userId){
+//        return getPostsByuserId(userId).stream()
+//                .filter(post -> post instanceof PromoPost)
+//                .map(post -> (PromoPost)post).toList();
+//    }
+
+    public List<Post> getPostsBySellerId(int sellerId){
+        if(!userRepository.userExists(sellerId)) throw new NotFoundException("El vendedor no existe");
+        List<Post> postsList = postRepository.findAll().stream().filter(post -> post.getUserId() == sellerId).toList();
+        if(postsList.isEmpty()) throw new NotFoundException("El vendedor no tiene publicaciones en el momento");
+        return postsList;
+    }
+
+    public List<PromoPost> getPromoPostBySellerId(int sellerId){
+        List<PromoPost> promoPosts = getPostsBySellerId(sellerId).stream()
+                .filter(post -> post instanceof PromoPost)
+                .map(post -> (PromoPost)post).toList();
+        if(promoPosts.isEmpty()) throw new NotFoundException("El vendedor no tiene publicaciones en promocion en el momento ");
+        return promoPosts;
+    }
+
+    @Override
+    public PromoPostCountDto getCountPromoPost(int sellerId) {
+        int count = getPromoPostBySellerId(sellerId).size();
+        User seller = userRepository.getUserById(sellerId);
+        return new PromoPostCountDto(sellerId, seller.getUserName(), count);
+    }
+
+    public List<Post> getPostsByuserId(int userId){
         if(!userRepository.userExists(userId)) throw new NotFoundException(MessageFormat.format("El usuario con id {0} no existe",userId));
         List<Seller> followedList = userRepository.getUserById(userId).getFollowed();
         if(followedList.isEmpty()){
@@ -105,7 +146,7 @@ public class PostService implements IPostService {
         if(lastestPosts.isEmpty()){
             throw new NotFoundException(MessageFormat.format("No se encontraron post de los vendedores seguidos del usuario {0}",userId));
         }
-        return lastestPosts.stream().map(post -> mapper.convertValue(post, PostResponseDto.class)).toList();
+        return lastestPosts;
     }
 
     public boolean compareDates(LocalDate date1, LocalDate date2){
@@ -122,12 +163,14 @@ public class PostService implements IPostService {
                 return new FollowedPostsDto(
                         userId,
                         getPostsByuserId(userId).stream()
+                                .map(post -> mapper.convertValue(post, PostResponseDto.class))
                                 .sorted(Comparator.comparing(PostResponseDto::date)).toList());
             }
             case "date_desc" -> {
                 return new FollowedPostsDto(
                         userId,
                         getPostsByuserId(userId).stream()
+                                .map(post -> mapper.convertValue(post, PostResponseDto.class))
                                 .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
             }
             default -> throw new BadRequestException(MessageFormat.format("{0} no es valido, recuerde que debe ingresar 'date_asc' o 'date_desc'", order));
