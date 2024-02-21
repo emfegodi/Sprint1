@@ -142,6 +142,7 @@ public class PostService implements IPostService {
 
     @Override
     public List<PostResponseDto> getSellerPromoPosts(int userId) {
+        if(!userRepository.userExists(userId)) throw new NotFoundException(MessageFormat.format("El usuario con id {0} no existe",userId));
         return postRepository.findAll().stream()
         .filter(post -> post.isHasPromo() && post.getUserId() == userId)
         .map(post -> mapper.convertValue(post, PostResponseDto.class))
