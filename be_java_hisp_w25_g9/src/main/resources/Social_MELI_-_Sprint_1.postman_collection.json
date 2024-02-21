@@ -1020,7 +1020,8 @@
 							"disabled": true
 						}
 					]
-				}
+				},
+				"description": "Este endpoint permite dar de alta una nueva publicación por parte de un vendedor, en la cual se especifíquen las características del producto relacionado a esta publicación.\n\nDentro del cuerpo esperado para la creación de la publicación se debe encontrar el identificador del vendedor, la fecha de publicación, las especificaciones del producto, la categoría a la que pertenece y el precio.\n\nEste retorna un mensaje en forma de un objeto indicando la respuesta obtenida del proceso, que puede ser fallida o exitosa."
 			},
 			"response": [
 				{
