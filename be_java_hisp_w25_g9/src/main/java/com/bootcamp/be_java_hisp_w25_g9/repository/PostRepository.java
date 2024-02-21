@@ -50,6 +50,11 @@ public class PostRepository implements IPostRepository {
             Random rand = new Random();
             postList.add(new Post(postIdCounter++, rand.nextInt(25, 50), rand.nextInt(40), currentDate, product, rand.nextDouble(50.00), rand.nextBoolean(), rand.nextDouble(50.00)));
         }
+        postList.add(new Post(postIdCounter++, 29, 25, LocalDate.of(2024,02,10), productList.get(1), 78.0, false, 0.0));
+        postList.add(new Post(postIdCounter++, 29, 25,  currentDate, productList.get(1), 78.0, false, 0.0));
+        postList.add(new Post(postIdCounter++, 29, 25, LocalDate.of(2024,02,14), productList.get(1), 78.0, false, 0.0));
+        postList.add(new Post(postIdCounter++, 29, 25, LocalDate.of(2024,01,10), productList.get(1), 78.0, false, 0.0));
+        postList.add(new Post(postIdCounter++, 30, 25, LocalDate.of(2024,02,14), productList.get(1), 78.0, false, 0.0));
     }
 
 }

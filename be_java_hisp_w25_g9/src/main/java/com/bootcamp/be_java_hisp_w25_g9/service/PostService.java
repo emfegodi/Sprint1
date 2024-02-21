@@ -3,11 +3,8 @@ package com.bootcamp.be_java_hisp_w25_g9.service;
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.PromoProductsCountDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.*;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Post;
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
@@ -55,7 +52,8 @@ public class PostService implements IPostService {
 
     @Override
     public FollowedPostsDto getPost(int userId) {
-        return new FollowedPostsDto(userId, getPostsByuserId(userId));
+        return new FollowedPostsDto(userId, getPostsByuserId(userId).stream()
+                .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
     }
 
     public List<PostResponseDto> getPostsByuserId(int userId){
@@ -69,12 +67,13 @@ public class PostService implements IPostService {
         for (Seller seller : followedList) {
             lastestPosts.addAll(
                     postsLlist.stream()
-                            .sorted(Comparator.comparing(Post::getDate).reversed())
+
                             .filter(post -> {
-                                        return post.getUserId() == seller.getUserId() &&
-                                                compareDates(post.getDate(), LocalDate.now());
+                                            return compareDates(post.getDate(), LocalDate.now()) &&
+                                         post.getUserId() == seller.getUserId() ;
                                     }
-                            ).toList());
+                            )
+                            .toList());
         }
         if(lastestPosts.isEmpty()){
             throw new NotFoundException(MessageFormat.format("No se encontraron post de los vendedores seguidos del usuario {0}",userId));
@@ -99,7 +98,10 @@ public class PostService implements IPostService {
                                 .sorted(Comparator.comparing(PostResponseDto::date)).toList());
             }
             case "date_desc" -> {
-                return getPost(userId);
+                return new FollowedPostsDto(
+                        userId,
+                        getPostsByuserId(userId).stream()
+                                .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
             }
             default -> throw new BadRequestException(MessageFormat.format("{0} no es valido, recuerde que debe ingresar 'date_asc' o 'date_desc'", order));
         }
@@ -117,23 +119,23 @@ public class PostService implements IPostService {
     @Override
     public PromoProductsCountDto getPromoPostCount(int userId) {
         User seller = userRepository.getUserById(userId);
-        int promoPostCount = getPromoPostList(userId).size();
+        int promoPostCount = getPromoPostList(userId).postResponseDto().size();
         return new PromoProductsCountDto(userId, seller.getUserName(), promoPostCount);
     }
 
     @Override
-    public List<PostRequestDto> getPromoPostList(int userId) {
+    public PromoProductsListDto getPromoPostList(int userId) {
         User seller = userRepository.getUserById(userId);
         if (seller == null || !seller.getClass().equals(Seller.class)){
             throw new NotFoundException("El usuario no se encuentra o no es vendedor");
         }
-        List<PostRequestDto> promPostList = postRepository.findAll().stream()
+        List<PostResponseDto> promPostList = postRepository.findAll().stream()
                 .filter(x -> x.isHasPromo() && x.getUserId()==userId)
-                .map(x -> mapper.convertValue(x, PostRequestDto.class)).toList();
+                .map(x -> mapper.convertValue(x, PostResponseDto.class)).toList();
         if (promPostList.isEmpty()){
             throw new NotFoundException("No hay publicaciones con productos en descuento para ese vendedor");
         }
-        return promPostList;
+        return new PromoProductsListDto(userId, seller.getUserName(), promPostList);
     }
 
     public void verifyPost(PostRequestDto postRequestDto){
