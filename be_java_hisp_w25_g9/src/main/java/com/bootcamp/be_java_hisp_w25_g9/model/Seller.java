@@ -5,7 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Seller extends User {
-    public Seller(int userId, String userName){
+    public Seller(Integer userId, String userName){
         super(userId, userName);
     }
 }

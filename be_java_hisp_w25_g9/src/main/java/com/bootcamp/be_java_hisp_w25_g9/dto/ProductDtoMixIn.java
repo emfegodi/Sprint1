@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class ProductDtoMixIn {
     @JsonProperty("product_id")
-    private int productId;
+    private Integer productId;
 
     @JsonProperty("product_name")
     private String productName;

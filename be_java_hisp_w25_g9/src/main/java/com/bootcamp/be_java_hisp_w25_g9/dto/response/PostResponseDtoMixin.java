@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class PostResponseDtoMixin {
     @JsonProperty("post_id")
-    private int id;
+    private Integer id;
 
     @JsonProperty("user_id")
-    private int userId;
+    private Integer userId;
 
     @JsonProperty("date")
     private LocalDate date;
@@ -18,9 +18,9 @@ public abstract class PostResponseDtoMixin {
     private Product product;
 
     @JsonProperty("category")
-    private int category;
+    private Integer category;
 
     @JsonProperty("price")
-    private double price;
+    private Double price;
 
 }

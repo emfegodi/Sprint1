@@ -8,12 +8,12 @@ import java.time.LocalDate;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record PostResponseDto(
-        int post_id,
-        int user_id,
+        Integer post_id,
+        Integer user_id,
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
         LocalDate date,
         ProductDto product,
-        int category,
-        double price
+        Integer category,
+        Double price
 ) {
 }
