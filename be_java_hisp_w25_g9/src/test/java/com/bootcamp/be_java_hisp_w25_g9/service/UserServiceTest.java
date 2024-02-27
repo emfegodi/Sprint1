@@ -96,4 +96,49 @@ class UserServiceTest {
         assertThrows(BadRequestException.class,()->userService.unfollow(anyInt(),idSeller));
     }
 
+    @Test
+    void getFollowersCount(){
+        //ARRANGE
+        int idSeller = 4;
+
+        Seller seller = new Seller(idSeller,"TestSeller");
+        Client client = new Client(1,"TestClient");
+        Client client2 = new Client(2,"TestClient2");
+        Client client3 = new Client(3,"TestClient3");
+
+        client.getFollowed().add(seller);
+        client2.getFollowed().add(seller);
+        client3.getFollowed().add(seller);
+
+        List<User> userList = new ArrayList<>(List.of(seller,client,client2,client3));
+
+        FollowersCountDto followersCountDtoExpected = new FollowersCountDto(idSeller,"TestSeller",3);
+        FollowersCountDto followersCountDtoResult;
+
+        when(userRepository.findAll()).thenReturn(userList);
+
+        //ACT
+        followersCountDtoResult = userService.getFollowersCount(idSeller);
+
+        //ASSERT
+        assertEquals(followersCountDtoExpected,followersCountDtoResult);
+    }
+    @Test
+    void getFollowersCountListIsEmpty(){
+        //ARRANGE
+        int idSeller = 4;
+
+        Seller seller = new Seller(idSeller,"TestSeller");
+        Client client = new Client(1,"TestClient");
+        Client client2 = new Client(2,"TestClient2");
+        Client client3 = new Client(3,"TestClient3");
+
+
+        List<User> userList = new ArrayList<>(List.of(seller,client,client2,client3));
+
+        when(userRepository.findAll()).thenReturn(userList);
+
+        //ACT & ASSERT
+        assertThrows(NotFoundException.class,()->userService.getFollowersCount(idSeller));
+    }
 }
