@@ -1,7 +1,9 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowersCountDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Client;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.model.User;
@@ -13,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,4 +95,5 @@ class UserServiceTest {
         //ACT & ASSERT
         assertThrows(BadRequestException.class,()->userService.unfollow(anyInt(),idSeller));
     }
+
 }

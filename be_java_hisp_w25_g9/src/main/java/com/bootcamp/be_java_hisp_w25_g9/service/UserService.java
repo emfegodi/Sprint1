@@ -3,7 +3,7 @@ package com.bootcamp.be_java_hisp_w25_g9.service;
 import com.bootcamp.be_java_hisp_w25_g9.dto.UserDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowersDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.FolowersCountDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowersCountDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NoUsersFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
@@ -83,7 +83,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public FolowersCountDto getFollowersCount(int userId) {
+    public FollowersCountDto getFollowersCount(int userId) {
 
         List<Seller> sellerList = userRepository.findAll().stream()
                 .flatMap(u -> u.getFollowed().stream()
@@ -94,7 +94,7 @@ public class UserService implements IUserService {
         if (sellerList.isEmpty()) throw new NotFoundException("Vendedor no encontrado");
         int count = sellerList.size();
 
-        return new FolowersCountDto(userId, sellerList.get(0).getUserName(), count);
+        return new FollowersCountDto(userId, sellerList.get(0).getUserName(), count);
     }
 
     @Override
