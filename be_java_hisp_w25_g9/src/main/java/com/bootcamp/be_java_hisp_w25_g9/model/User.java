@@ -7,11 +7,11 @@ import java.util.List;
 
 @Data
 public abstract class User {
-    private int userId;
+    private Integer userId;
     private String userName;
     private List<Seller> followed;
 
-    public User(int userId, String userName){
+    public User(Integer userId, String userName){
         this.userId = userId;
         this.userName = userName;
         this.followed = new ArrayList<>();

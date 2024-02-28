@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class Product {
 
-    int productId;
+    Integer productId;
     String productName;
     String type;
     String brand;

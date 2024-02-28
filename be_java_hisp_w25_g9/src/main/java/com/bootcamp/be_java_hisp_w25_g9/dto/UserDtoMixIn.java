@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public abstract class UserDtoMixIn {
         @JsonProperty("user_id")
-        private int userId;
+        private Integer userId;
         
         @JsonProperty("user_name")
         private String userName;

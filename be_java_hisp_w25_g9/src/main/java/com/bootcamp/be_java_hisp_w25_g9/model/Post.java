@@ -14,11 +14,11 @@ import java.time.LocalDate;
 @FieldDefaults(level= AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class Post {
-    int id;
-    int userId;
-    int category;
+    Integer id;
+    Integer userId;
+    Integer category;
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     LocalDate date;
     Product product;
-    double price;
+    Double price;
 }

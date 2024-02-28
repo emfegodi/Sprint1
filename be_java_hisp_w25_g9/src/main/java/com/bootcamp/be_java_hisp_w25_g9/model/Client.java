@@ -5,7 +5,7 @@ import lombok.experimental.FieldDefaults;
 
 @FieldDefaults(level= AccessLevel.PRIVATE)
 public class Client extends User{
-    public Client(int userId, String userName){
+    public Client(Integer userId, String userName){
         super(userId, userName);
     }
 }
