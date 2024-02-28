@@ -8,7 +8,8 @@ public interface IUserRepository {
     String addUser(User user);
 
     List<User> findAll();
-    boolean userExists(long userId);
+    boolean userExists(int userId);
+
     void save(User user);
     User getUserById(Integer id);
 }
