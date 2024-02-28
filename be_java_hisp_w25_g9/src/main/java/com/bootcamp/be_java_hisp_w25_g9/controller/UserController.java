@@ -2,7 +2,7 @@ package com.bootcamp.be_java_hisp_w25_g9.controller;
 
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowersDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.FolowersCountDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowersCountDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.service.interfaces.IUserService;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}/followers/count")
-    public ResponseEntity<FolowersCountDto> countFollowers(@PathVariable int userId){
+    public ResponseEntity<FollowersCountDto> countFollowers(@PathVariable int userId){
 
         return  new ResponseEntity<>(service.getFollowersCount(userId), HttpStatus.OK);
     }
