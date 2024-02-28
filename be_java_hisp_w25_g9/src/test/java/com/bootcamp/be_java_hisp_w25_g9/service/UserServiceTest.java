@@ -11,7 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -20,10 +24,10 @@ import static org.mockito.Mockito.when;
 class UserServiceTest {
 
     @Mock
-    UserRepository repository;
+    UserRepository userRepository;
 
     @InjectMocks
-    UserService service;
+    UserService userService;
 
     @Test
     void followOk() {
@@ -33,12 +37,12 @@ class UserServiceTest {
         int idToFollow = 26;
         Client testUser = new Client(id, "TestUser");
         Seller testSeller = new Seller(id, "TestSeller");
-        when(repository.userExists(anyInt())).thenReturn(true, true);
-        when(repository.getUserById(any())).thenReturn(testSeller, testUser, testSeller);
-        doNothing().when(repository).save(any());
+        when(userRepository.userExists(anyInt())).thenReturn(true, true);
+        when(userRepository.getUserById(any())).thenReturn(testSeller, testUser, testSeller);
+        doNothing().when(userRepository).save(any());
         MessageDto expected = new MessageDto("Vendedor seguido con éxito");
         //Act
-        MessageDto result = service.follow(id, idToFollow);
+        MessageDto result = userService.follow(id, idToFollow);
         //Assert
         assertEquals(expected, result);
 
@@ -53,10 +57,10 @@ class UserServiceTest {
         Client testUser = new Client(id, "TestUser");
         Seller testSeller = new Seller(idToFollow, "TestSeller");
         testUser.getFollowed().add(testSeller);
-        when(repository.userExists(anyInt())).thenReturn(true, true);
-        when(repository.getUserById(any())).thenReturn(testSeller, testUser, testSeller);
+        when(userRepository.userExists(anyInt())).thenReturn(true, true);
+        when(userRepository.getUserById(any())).thenReturn(testSeller, testUser, testSeller);
         //Act Assert
-        assertThrows(BadRequestException.class, () -> service.follow(id, idToFollow));
+        assertThrows(BadRequestException.class, () -> userService.follow(id, idToFollow));
 
     }
 
@@ -67,10 +71,10 @@ class UserServiceTest {
         int id = 1;
         int idToFollow = 26;
         Client testUser = new Client(id, "TestUser");
-        when(repository.userExists(anyInt())).thenReturn(true, true);
-        when(repository.getUserById(any())).thenReturn(testUser);
+        when(userRepository.userExists(anyInt())).thenReturn(true, true);
+        when(userRepository.getUserById(any())).thenReturn(testUser);
         //Act Assert
-        assertThrows(BadRequestException.class, () -> service.follow(id, idToFollow));
+        assertThrows(BadRequestException.class, () -> userService.follow(id, idToFollow));
 
     }
 
@@ -81,7 +85,7 @@ class UserServiceTest {
         int id = 1;
         int idToFollow = 1;
         //Act Assert
-        assertThrows(BadRequestException.class,() -> service.follow(id, idToFollow));
+        assertThrows(BadRequestException.class,() -> userService.follow(id, idToFollow));
 
     }
 
@@ -91,9 +95,9 @@ class UserServiceTest {
         //Arrange
         int id = 1;
         int idToFollow = 26;
-        when(repository.userExists(anyInt())).thenReturn(false);
+        when(userRepository.userExists(anyInt())).thenReturn(false);
         //Act Assert
-        assertThrows(BadRequestException.class,() -> service.follow(id, idToFollow));
+        assertThrows(BadRequestException.class,() -> userService.follow(id, idToFollow));
 
     }
 
@@ -103,10 +107,73 @@ class UserServiceTest {
         //Arrange
         int id = 1;
         int idToFollow = 26;
-        when(repository.userExists(anyInt())).thenReturn(true, false);
+        when(userRepository.userExists(anyInt())).thenReturn(true, false);
         //Act Assert
-        assertThrows(BadRequestException.class,() -> service.follow(id, idToFollow));
+        assertThrows(BadRequestException.class,() -> userService.follow(id, idToFollow));
+    }
 
+    @Test
+    void unfollowOK() {
+        //ARRANGE
+        int idClient = 1;
+        int idSeller = 2;
+        Client client = new Client(idClient,"TestClient");
+        Seller seller = new Seller(idSeller,"TestSeller");
+        List<Seller> followedList = client.getFollowed();
+        followedList.add(seller);
+
+        MessageDto messageDtoExpected = new MessageDto("El vendedor ha sido quitado de la lista de seguidos del cliente");
+        MessageDto messageDtoResult;
+
+        when(userRepository.userExists(anyInt())).thenReturn(true);
+        when(userRepository.getUserById(anyInt())).thenReturn(client,seller);
+
+        //ACT
+        messageDtoResult = userService.unfollow(idClient,idSeller);
+
+        //ASSERT
+        assertEquals(messageDtoExpected,messageDtoResult);
+    }
+    @Test
+    void unfollowMyself() {
+        //ARRANGE
+        int idClient = 1;
+        int idSeller = 1;
+
+        //ACT & ASSERT
+        assertThrows(BadRequestException.class,()->userService.unfollow(idClient,idSeller));
+    }
+    @Test
+    void unfollowClientNoExists() {
+        //ARRANGE
+        int idClient = 1;
+        when(userRepository.userExists(idClient)).thenReturn(false);
+
+        //ACT & ASSERT
+        assertThrows(BadRequestException.class,()->userService.unfollow(idClient,anyInt()));
+    }
+    @Test
+    void unfollowSellerNoExists() {
+        //ARRANGE
+        int idSeller = 2;
+        when(userRepository.userExists(anyInt())).thenReturn(true,false);
+
+        //ACT & ASSERT
+        assertThrows(BadRequestException.class,()->userService.unfollow(anyInt(),idSeller));
+    }
+    @Test
+    void unfollowSellerUnfollowed() {
+        //ARRANGE
+        int idClient = 1;
+        int idSeller = 2;
+        Client client = new Client(idClient,"TestClient");
+        Seller seller = new Seller(idSeller,"TestSeller");
+
+        when(userRepository.userExists(anyInt())).thenReturn(true);
+        when(userRepository.getUserById(anyInt())).thenReturn(client,seller);
+
+        //ACT & ASSERT
+        assertThrows(BadRequestException.class,()->userService.unfollow(anyInt(),idSeller));
     }
 
 }
