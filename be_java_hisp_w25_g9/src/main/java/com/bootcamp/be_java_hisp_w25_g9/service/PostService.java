@@ -69,7 +69,7 @@ public class PostService implements IPostService {
                 .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
     }
 
-    public List<PostResponseDto> getPostsByuserId(int userId){
+    private List<PostResponseDto> getPostsByuserId(int userId){
         if(!userRepository.userExists(userId)) throw new NotFoundException(MessageFormat.format("El usuario con id {0} no existe",userId));
         List<Seller> followedList = userRepository.getUserById(userId).getFollowed();
         if(followedList.isEmpty()){
@@ -94,7 +94,7 @@ public class PostService implements IPostService {
         return lastestPosts.stream().map(post -> mapper.convertValue(post, PostResponseDto.class)).toList();
     }
 
-    public boolean compareDates(LocalDate date1, LocalDate date2){
+    private boolean compareDates(LocalDate date1, LocalDate date2){
         long compDate = ChronoUnit.DAYS.between(date1, date2);
         double compDateWeeks = compDate/7.0;
         return compDateWeeks >= 0  && compDateWeeks <= 2.0;
