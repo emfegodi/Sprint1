@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -28,8 +29,8 @@ public class UserRepository implements IUserRepository {
     public List<User> findAll(){
         return this.userList;
     }
-    public boolean userExists(long userId){
-        Optional<User> userOpt = userList.stream().filter(u -> u.getUserId()==userId).findFirst();
+    public boolean userExists(Integer userId){
+        Optional<User> userOpt = userList.stream().filter(u -> Objects.equals(u.getUserId(), userId)).findFirst();
         return userOpt.isPresent();
     }
 
@@ -39,7 +40,7 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public User getUserById(Integer id) {
-        return userList.stream().filter(x -> x.getUserId() == id).findFirst().orElse(null);
+        return userList.stream().filter(x -> x.getUserId().equals(id)).findFirst().orElse(null);
     }
 
     public void loadUserList(){
