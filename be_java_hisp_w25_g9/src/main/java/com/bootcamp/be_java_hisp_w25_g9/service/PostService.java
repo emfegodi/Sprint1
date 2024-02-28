@@ -65,20 +65,20 @@ public class PostService implements IPostService {
 
     @Override
     public FollowedPostsDto getPost(int userId) {
-        return new FollowedPostsDto(userId, getPostsByuserId(userId).stream()
+        return new FollowedPostsDto(userId, getPostsByUserId(userId).stream()
                 .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
     }
 
-    private List<PostResponseDto> getPostsByuserId(int userId){
+    private List<PostResponseDto> getPostsByUserId(int userId){
         if(!userRepository.userExists(userId)) throw new NotFoundException(MessageFormat.format("El usuario con id {0} no existe",userId));
         List<Seller> followedList = userRepository.getUserById(userId).getFollowed();
         if(followedList.isEmpty()){
             throw new NotFoundException(MessageFormat.format("El usuario {0} no tiene vendedores seguidos", userId));
         }
         List<Post> postsLlist = postRepository.findAll();
-        List<Post> lastestPosts = new ArrayList<>();
+        List<Post> latestPosts = new ArrayList<>();
         for (Seller seller : followedList) {
-            lastestPosts.addAll(
+            latestPosts.addAll(
                     postsLlist.stream()
 
                             .filter(post -> {
@@ -88,10 +88,10 @@ public class PostService implements IPostService {
                             )
                             .toList());
         }
-        if(lastestPosts.isEmpty()){
+        if(latestPosts.isEmpty()){
             throw new NotFoundException(MessageFormat.format("No se encontraron post de los vendedores seguidos del usuario {0}",userId));
         }
-        return lastestPosts.stream().map(post -> mapper.convertValue(post, PostResponseDto.class)).toList();
+        return latestPosts.stream().map(post -> mapper.convertValue(post, PostResponseDto.class)).toList();
     }
 
     private boolean compareDates(LocalDate date1, LocalDate date2){
@@ -107,13 +107,13 @@ public class PostService implements IPostService {
             case "date_asc" -> {
                 return new FollowedPostsDto(
                         userId,
-                        getPostsByuserId(userId).stream()
+                        getPostsByUserId(userId).stream()
                                 .sorted(Comparator.comparing(PostResponseDto::date)).toList());
             }
             case "date_desc" -> {
                 return new FollowedPostsDto(
                         userId,
-                        getPostsByuserId(userId).stream()
+                        getPostsByUserId(userId).stream()
                                 .sorted(Comparator.comparing(PostResponseDto::date).reversed()).toList());
             }
             default -> throw new BadRequestException(MessageFormat.format("{0} no es valido, recuerde que debe ingresar 'date_asc' o 'date_desc'", order));
