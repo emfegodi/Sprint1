@@ -32,12 +32,13 @@ public class UserRepository implements IUserRepository {
         Optional<User> userOpt = userList.stream().filter(u -> u.getUserId()==userId).findFirst();
         return userOpt.isPresent();
     }
+
     public void save(User user){
         userList.set(userList.indexOf(getUserById(user.getUserId())),user);
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(Integer id) {
         return userList.stream().filter(x -> x.getUserId().equals(id)).findFirst().orElse(null);
     }
 
