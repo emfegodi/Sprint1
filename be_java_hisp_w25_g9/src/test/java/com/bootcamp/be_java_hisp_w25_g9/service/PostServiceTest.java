@@ -6,6 +6,7 @@ import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
+import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Client;
 import com.bootcamp.be_java_hisp_w25_g9.model.Post;
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
@@ -28,8 +29,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
@@ -51,6 +51,7 @@ class PostServiceTest {
         mapper.addMixIn(Product.class, ProductDtoMixIn.class);
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
     }
+
 
     @DisplayName("getPostByOrder Case ASC")
     @Test
@@ -95,7 +96,7 @@ class PostServiceTest {
     }
 
     @Test
-    void getPostByIdNotOk() {
+    void getPostByIdNotOkBadRequest() {
         //ARRANGE
         int userId = 1;
         String order = "date_asce";
@@ -103,4 +104,63 @@ class PostServiceTest {
         //ASSERT
         assertThrows(BadRequestException.class,()-> postService.getPost(userId, order));
     }
+
+    @Test
+    void getPostByIdNotOkNotFound(){
+        //ARRANGE
+        int userId = 1;
+        String order = "date_asc";
+        //ACT
+        when(userRepository.userExists(userId)).thenReturn(false);
+        //ASSERT
+        NotFoundException exception = assertThrows(NotFoundException.class,()-> postService.getPost(userId, order));
+        assertEquals(exception.getMessage(),"El usuario con id 1 no existe");
+    }
+
+    @Test
+
+    void getPostByIdNotOkNotFoundSeller(){
+        //ARRANGE
+        int userId = 1;
+        String order = "date_asc";
+        Client client = new Client(1, "Quynn Nunez");
+        //ACT
+        when(userRepository.userExists(userId)).thenReturn(true);
+        when(userRepository.getUserById(userId)).thenReturn(client);
+        //ASSERT
+        NotFoundException exception =  assertThrows(NotFoundException.class,()-> postService.getPost(userId, order));
+        assertEquals(exception.getMessage(),"El usuario 1 no tiene vendedores seguidos");
+    }
+
+    @Test
+    void getPostByIdNotOkNotFOundPosts(){
+        //ARRANGE
+        int userId = 1;
+        String order = "date_asc";
+        List<Product> productList = List.of(
+                new Product(1, "Camisa", "Ropa", "Marca A", "Azul", "Algodón")
+        );
+
+        List<Seller> clients = List.of(
+                new Seller(35, "Deacon Marquez")
+        );
+
+        Client client = new Client(1, "Quynn Nunez");
+        client.setFollowed(clients);
+
+        List<Post> postList = new ArrayList<>();
+        postList.add(new Post(1, 29, 25, LocalDate.now().minusDays(3), productList.get(0), 78.0));
+
+        //ACT
+        when(userRepository.userExists(userId)).thenReturn(true);
+        when(userRepository.getUserById(userId)).thenReturn(client);
+        when(postRepository.findAll()).thenReturn(postList);
+        //ACT
+        NotFoundException exception =  assertThrows(NotFoundException.class,()-> postService.getPost(userId, order));
+        assertEquals(exception.getMessage(),"No se encontraron post de los vendedores seguidos del usuario 1");
+    }
+
+
+
+
 }
