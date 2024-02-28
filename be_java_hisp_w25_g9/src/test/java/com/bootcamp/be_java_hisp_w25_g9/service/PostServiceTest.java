@@ -45,10 +45,9 @@ class PostServiceTest {
         mapper.addMixIn(Product.class, ProductDtoMixIn.class);
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
     }
-
-    @DisplayName("getPostByOrder Case ASC")
+    
     @Test
-    void getPostByOrderAsc() {
+    void getPostOk() {
         //ARRANGE
         int userId = 1;
         List<Product> productList = List.of(
