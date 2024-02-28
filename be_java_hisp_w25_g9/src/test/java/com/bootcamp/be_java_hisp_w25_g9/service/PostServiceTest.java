@@ -1,10 +1,7 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
-import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
@@ -25,14 +22,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.event.annotation.BeforeTestMethod;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -132,13 +128,10 @@ class PostServiceTest {
         mapper.addMixIn(Post.class, PostRequestDtoMixin.class);
     }
 
-
-    @DisplayName("getPostByOrder Case ASC")
     @Test
-    void getPostByOrderAsc() {
+    void getPostOk() {
         //ARRANGE
         int userId = 1;
-        String order = "date_asc";
         List<Product> productList = List.of(
                 new Product(1, "Camisa", "Ropa", "Marca A", "Azul", "Algodón"),
                 new Product(2, "Pantalón", "Ropa", "Marca B", "Negro", "Poliéster"),
@@ -162,9 +155,9 @@ class PostServiceTest {
         postList.add(new Post(4, 35, 25, LocalDate.now().minusDays(10), productList.get(1), 78.0));
 
         List<PostResponseDto> postResponseDtosExpected = new ArrayList<>();
-        postResponseDtosExpected.add(mapper.convertValue(postList.get(3), PostResponseDto.class));
-        postResponseDtosExpected.add(mapper.convertValue(postList.get(0), PostResponseDto.class));
         postResponseDtosExpected.add(mapper.convertValue(postList.get(1), PostResponseDto.class));
+        postResponseDtosExpected.add(mapper.convertValue(postList.get(0), PostResponseDto.class));
+        postResponseDtosExpected.add(mapper.convertValue(postList.get(3), PostResponseDto.class));
 
         FollowedPostsDto expected = new FollowedPostsDto(1, postResponseDtosExpected);
         //ACT
@@ -172,7 +165,7 @@ class PostServiceTest {
         when(userRepository.getUserById(userId)).thenReturn(client);
         when(postRepository.findAll()).thenReturn(postList);
         //ASSERT
-        assertEquals(postService.getPost(userId, order), expected);
+        assertEquals(postService.getPost(userId), expected);
     }
 
     @Test
@@ -239,8 +232,6 @@ class PostServiceTest {
         NotFoundException exception =  assertThrows(NotFoundException.class,()-> postService.getPost(userId, order));
         assertEquals(exception.getMessage(),"No se encontraron post de los vendedores seguidos del usuario 1");
     }
-
-
 
 
 }
