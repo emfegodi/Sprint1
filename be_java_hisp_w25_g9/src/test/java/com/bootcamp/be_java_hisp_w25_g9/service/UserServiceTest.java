@@ -1,7 +1,6 @@
 package com.bootcamp.be_java_hisp_w25_g9.service;
 
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.FolowersCountDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowersCountDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
 import com.bootcamp.be_java_hisp_w25_g9.model.Client;
@@ -10,20 +9,21 @@ import com.bootcamp.be_java_hisp_w25_g9.model.User;
 import com.bootcamp.be_java_hisp_w25_g9.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
+import java.util.ArrayList;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -225,8 +225,8 @@ class UserServiceTest {
 
         List<User> userList = new ArrayList<>(List.of(seller, client, client2, client3));
 
-        FolowersCountDto followersCountDtoExpected = new FolowersCountDto(idSeller, "TestSeller", 3);
-        FolowersCountDto followersCountDtoResult;
+        FollowersCountDto followersCountDtoExpected = new FollowersCountDto(idSeller, "TestSeller", 3);
+        FollowersCountDto followersCountDtoResult;
 
         when(userRepository.findAll()).thenReturn(userList);
 
