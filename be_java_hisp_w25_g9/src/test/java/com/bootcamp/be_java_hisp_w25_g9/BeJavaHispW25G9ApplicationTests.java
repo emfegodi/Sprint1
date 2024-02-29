@@ -6,8 +6,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class BeJavaHispW25G9ApplicationTests {
 
+	//Test only to cover main springboot invocation
 	@Test
 	void contextLoads() {
+		BeJavaHispW25G9Application.main(new String[] {});
 	}
 
 }

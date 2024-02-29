@@ -44,8 +44,14 @@ public class UserRepository implements IUserRepository {
     }
 
     public void loadUserList(){
-        userList.add(new Client(1, "Quynn Nunez"));
-        userList.add(new Client(2, "Zena Pastor"));
+        Client client1 = new Client(1, "Quynn Nunez");
+        Seller seller29 = new Seller(29, "Josiah Sanchez");
+        client1.getFollowed().add(seller29);
+        Client client2 = new Client(2, "Sylvia Catalina");
+        Seller seller27 = new Seller(27, "Gregory Bravo");
+        client2.getFollowed().add(seller27);
+        userList.add(client1);
+        userList.add(client2);
         userList.add(new Client(3, "Sylvia Catalina"));
         userList.add(new Client(4, "Macon Vera"));
         userList.add(new Client(5, "Kyle Arias"));
@@ -70,9 +76,9 @@ public class UserRepository implements IUserRepository {
         userList.add(new Client(24, "Zia Martina"));
         userList.add(new Client(25, "Stacy Sanchez"));
         userList.add(new Seller(26, "Chase Sanchez"));
-        userList.add(new Seller(27, "Gregory Bravo"));
+        userList.add(seller27);
         userList.add(new Seller(28, "Zelda Atlas"));
-        userList.add(new Seller(29, "Josiah Sanchez"));
+        userList.add(seller29);
         userList.add(new Seller(30, "Patrick Blanco"));
         userList.add(new Seller(31, "Otto Camila"));
         userList.add(new Seller(32, "Madeline Reyes"));

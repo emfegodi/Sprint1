@@ -2,8 +2,10 @@ package com.bootcamp.be_java_hisp_w25_g9.service;
 
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDtoMixIn;
+import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDtoMixin;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
+import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.BadRequestException;
 import com.bootcamp.be_java_hisp_w25_g9.exceptions.NotFoundException;
@@ -12,6 +14,7 @@ import com.bootcamp.be_java_hisp_w25_g9.model.Post;
 import com.bootcamp.be_java_hisp_w25_g9.model.Product;
 import com.bootcamp.be_java_hisp_w25_g9.model.Seller;
 import com.bootcamp.be_java_hisp_w25_g9.repository.PostRepository;
+import com.bootcamp.be_java_hisp_w25_g9.repository.ProductRepository;
 import com.bootcamp.be_java_hisp_w25_g9.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -29,6 +32,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,6 +44,8 @@ class PostServiceTest {
     UserRepository userRepository;
     @Mock
     PostRepository postRepository;
+    @Mock
+    ProductRepository productRepository;
 
     @InjectMocks
     PostService postService;
@@ -234,4 +242,37 @@ class PostServiceTest {
     }
 
 
+    @Test
+    void createPostOk() {
+
+        //ARRANGE
+        PostRequestDto postRequestDto = new PostRequestDto(
+                26,
+                LocalDate.now(),
+                new ProductDto(
+                        44,
+                        "testProductName",
+                        "TestType",
+                        "TestBrand",
+                        "TestColor",
+                        "no notes"
+                ),
+                100,
+                3000.0
+        );
+        MessageDto expected = new MessageDto("Publicación creada con éxito");
+        Seller testSeller = new Seller(26, "testUsername");
+
+        when(userRepository.getUserById(anyInt())).thenReturn(testSeller);
+        when(productRepository.getProductById(anyInt())).thenReturn(null);
+        doNothing().when(productRepository).addProduct(any());
+        doNothing().when(postRepository).addPost(any());
+
+        //ACT
+        MessageDto result = postService.createPost(postRequestDto);
+
+        //ASSERT
+        assertEquals(expected, result);
+
+    }
 }
