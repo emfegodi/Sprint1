@@ -3,21 +3,16 @@ package com.bootcamp.be_java_hisp_w25_g9.controller;
 import com.bootcamp.be_java_hisp_w25_g9.dto.ProductDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.request.PostRequestDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.FollowedPostsDto;
-import com.bootcamp.be_java_hisp_w25_g9.dto.response.MessageDto;
 import com.bootcamp.be_java_hisp_w25_g9.dto.response.PostResponseDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -25,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -119,14 +114,14 @@ class PostControllerIntegratedTest {
                 .andReturn();
     }
 
-    /*@Test
+    @Test
     void getFollowedPostOrderByDateTestOk() throws Exception {
 
         ProductDto productDto1 = new ProductDto(1, "Camisa", "Ropa", "Marca A", "Azul", "Algodón");
         ProductDto productDto2 = new ProductDto(2, "Pantalón", "Ropa", "Marca B", "Negro", "Poliéster");
         ProductDto productDto3 = new ProductDto(3, "Zapatos", "Calzado", "Marca C", "Blanco", "Cuero");
         FollowedPostsDto followedPostsDto = new FollowedPostsDto(1,
-                List.of(new PostResponseDto(3, 29,  LocalDate.of(2024,2,27), productDto1, 43, 65.0),
+                List.of(new PostResponseDto(3, 29, LocalDate.of(2024,2,27), productDto1, 43, 65.0),
                         new PostResponseDto(5, 30, LocalDate.of(2024,2,25), productDto2, 32, 65.0),
                         new PostResponseDto(4, 30, LocalDate.of(2024,2,24), productDto3, 12,9.0),
                         new PostResponseDto(2, 29, LocalDate.of(2024,2,19), productDto2, 40, 82.0)));
@@ -140,6 +135,6 @@ class PostControllerIntegratedTest {
                 .andReturn();
 
         assertEquals(payloadJson, mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8));
-    }*/
+    }
 
 }

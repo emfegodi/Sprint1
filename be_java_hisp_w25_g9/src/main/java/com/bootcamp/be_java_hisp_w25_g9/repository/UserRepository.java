@@ -94,6 +94,9 @@ public class UserRepository implements IUserRepository {
         userList.add(new Seller(48, "Lillith Reyes"));
         userList.add(new Seller(49, "Odessa Pia"));
         userList.add(new Seller(50, "Jackson Crespo"));
+
+        userList.get(0).getFollowed().add((Seller) userList.get(28));
+        userList.get(0).getFollowed().add((Seller) userList.get(29));
     }
 
 

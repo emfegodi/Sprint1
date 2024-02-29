@@ -44,17 +44,11 @@ public class PostRepository implements IPostRepository {
         productList.add(new Product(14, "Cinturón", "Accesorio", "Marca N", "Marrón", "Cuero"));
         productList.add(new Product(15, "Collar", "Accesorio", "Marca O", "Dorado", "Metal"));
 
-        LocalDate currentDate = LocalDate.now();
-        int postIdCounter = 1;
-        for (Product product : productList) {
-            Random rand = new Random();
-            postList.add(new Post(postIdCounter++, rand.nextInt(25, 50), rand.nextInt(40), currentDate, product, rand.nextDouble(50.00)));
-        }
-        postList.add(new Post(postIdCounter++, 29, 25, LocalDate.of(2024,02,10), productList.get(1), 78.0));
-        postList.add(new Post(postIdCounter++, 29, 25,  currentDate, productList.get(1), 78.0));
-        postList.add(new Post(postIdCounter++, 29, 25, LocalDate.of(2024,02,14), productList.get(1), 78.0));
-        postList.add(new Post(postIdCounter++, 29, 25, LocalDate.of(2024,01,10), productList.get(1), 78.0));
-        postList.add(new Post(postIdCounter++, 30, 25, LocalDate.of(2024,02,14), productList.get(1), 78.0));
+        postList.add(new Post(1, 29, 25, LocalDate.of(2024,2,10), productList.get(1), 78.0));
+        postList.add(new Post(2, 29, 40, LocalDate.of(2024,2,19), productList.get(1), 82.0));
+        postList.add(new Post(3, 29, 43, LocalDate.of(2024,2,27), productList.get(0), 65.0));
+        postList.add(new Post(4, 30, 12, LocalDate.of(2024,2,24), productList.get(2), 9.0));
+        postList.add(new Post(5, 30, 32, LocalDate.of(2024,2,25), productList.get(1), 65.0));
     }
 
 }
