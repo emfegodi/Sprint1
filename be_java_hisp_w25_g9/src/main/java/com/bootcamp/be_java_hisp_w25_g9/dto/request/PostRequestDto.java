@@ -20,9 +20,8 @@ public record PostRequestDto(
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
         LocalDate date,
         @Valid
-        @NotNull
+        @NotNull(message = "El producto no puede estar vacío.")
         ProductDto product,
-
         @NotNull(message = "El campo no puede estar vacío.")
         Integer category,
         @NotNull(message = "El campo no puede estar vacío.")
