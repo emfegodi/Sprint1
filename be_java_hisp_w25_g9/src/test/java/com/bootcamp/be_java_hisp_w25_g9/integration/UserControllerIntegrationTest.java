@@ -60,13 +60,13 @@ class UserControllerIntegrationTest {
 
     @Test
     void countFollowers() throws Exception {
-        int sellerId = 26;
-        String sellerName = "Chase Sanchez";
+        int sellerId = 28;
+        String sellerName = "Zelda Atlas";
         int followersCount = 2;
         FollowersCountDto followersCountDto = new FollowersCountDto(sellerId, sellerName,
                 followersCount);
 
-        mockMvc.perform(get("/users/{userId}/followers/count", 26)
+        mockMvc.perform(get("/users/{userId}/followers/count", sellerId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -75,15 +75,15 @@ class UserControllerIntegrationTest {
 
     @Test
     void getFollowersList() throws Exception {
-        int sellerId = 26;
-        String sellerName = "Chase Sanchez";
+        int sellerId = 28;
+        String sellerName = "Zelda Atlas";
         List<UserDto> followers = new ArrayList<>(List.of(
                 new UserDto(1, "Quynn Nunez"),
                 new UserDto(3, "Sylvia Catalina")
         ));
         FollowersDto followersDto = new FollowersDto(sellerId, sellerName, followers);
 
-        mockMvc.perform(get("/users/{userId}/followers/list", 26)
+        mockMvc.perform(get("/users/{userId}/followers/list", sellerId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -101,7 +101,7 @@ class UserControllerIntegrationTest {
         ));
         FollowedDto followedDto = new FollowedDto(clientId, clientName, followed);
 
-        mockMvc.perform(get("/users/{userId}/followed/list", 3)
+        mockMvc.perform(get("/users/{userId}/followed/list", clientId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
