@@ -36,7 +36,6 @@ public class UserService implements IUserService {
     public MessageDto follow(int userId, int userIdToFollow) {
         if(userId == userIdToFollow)
             throw new BadRequestException("El usuario no puede seguirse a sí mismo");
-
         if(!userRepository.userExists(userId))
             throw new BadRequestException("El cliente no existe");
         if(!userRepository.userExists(userIdToFollow))
@@ -75,7 +74,8 @@ public class UserService implements IUserService {
 
         if(!sellerFollowed.isPresent())
             throw new BadRequestException("El vendedor no estaba en la lista de seguidos del cliente");
-
+        System.out.println("----" + client);
+        System.out.println("----" + seller);
         followedList.remove(seller);
 
         return new MessageDto("El vendedor ha sido quitado de la lista de seguidos del cliente");

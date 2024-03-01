@@ -1,5 +1,6 @@
 package com.bootcamp.be_java_hisp_w25_g9.model;
 
+import java.util.Arrays;
 import lombok.Data;
 
 import java.util.ArrayList;

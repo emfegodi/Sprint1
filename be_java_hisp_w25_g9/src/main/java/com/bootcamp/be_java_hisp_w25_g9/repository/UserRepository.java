@@ -145,8 +145,8 @@ public class UserRepository implements IUserRepository {
         userList.add(seller49);
         userList.add(seller50);
 
-        client1.setFollowed(List.of(seller26, seller27, seller28, seller29, seller30));
-        client3.setFollowed(List.of(seller26, seller27, seller28));
+        client1.getFollowed().addAll(List.of(seller26, seller27, seller28, seller29, seller30));
+        client3.getFollowed().addAll(List.of(seller26, seller27, seller28));
     }
 
 
